@@ -34,7 +34,8 @@ export type AlertMessageIdentifier =
   | 'lifecycle-events-function-included-only-if-extension-used'
   | 'p2p-broker-recommendation'
   | 'command-palette-shortcut'
-  | 'asset-installed-explanation';
+  | 'asset-installed-explanation'
+  | 'extension-installed-explanation';
 
 export type EditorMosaicName =
   | 'scene-editor'
@@ -173,6 +174,7 @@ export type PreferencesValues = {|
   autoOpenMostRecentProject: boolean,
   hasProjectOpened: boolean,
   userShortcutMap: ShortcutMap,
+  newObjectDialogDefaultTab: 'asset-store' | 'new-object',
 |};
 
 /**
@@ -219,6 +221,8 @@ export type Preferences = {|
   setHasProjectOpened: (enabled: boolean) => void,
   resetShortcutsToDefault: () => void,
   setShortcutForCommand: (commandName: CommandName, shortcut: string) => void,
+  getNewObjectDialogDefaultTab: () => 'asset-store' | 'new-object',
+  setNewObjectDialogDefaultTab: ('asset-store' | 'new-object') => void,
 |};
 
 export const initialPreferences = {
@@ -247,6 +251,7 @@ export const initialPreferences = {
     autoOpenMostRecentProject: true,
     hasProjectOpened: false,
     userShortcutMap: {},
+    newObjectDialogDefaultTab: electron ? 'new-object' : 'asset-store',
   },
   setLanguage: () => {},
   setThemeName: () => {},
@@ -283,6 +288,8 @@ export const initialPreferences = {
   setHasProjectOpened: () => {},
   resetShortcutsToDefault: () => {},
   setShortcutForCommand: (commandName: CommandName, shortcut: string) => {},
+  getNewObjectDialogDefaultTab: () => 'asset-store',
+  setNewObjectDialogDefaultTab: () => {},
 };
 
 const PreferencesContext = React.createContext<Preferences>(initialPreferences);

@@ -1501,6 +1501,10 @@ module.exports = {
       }
     ]
   },
+  "firebase-example": {
+    "description": "A twitter-like social network called \"Not Twitter\" using Firestore, and showcase of some other features of Firebase.",
+    "usedExtensions": []
+  },
   "flappy-bird": {
     "description": "A clone of the challenging and popular Flappy Bird game, where you control a bird which has to avoid pipes.\n",
     "usedExtensions": [
@@ -3286,16 +3290,16 @@ module.exports = {
         "name": "PlatformBehavior"
       },
       {
+        "fullName": "Tween animation",
+        "name": "Tween"
+      },
+      {
         "fullName": "Anchor",
         "name": "AnchorBehavior"
       },
       {
         "fullName": "",
         "name": ""
-      },
-      {
-        "fullName": "Tween animation",
-        "name": "Tween"
       },
       {
         "fullName": "Scene management features",
@@ -4175,6 +4179,71 @@ module.exports = {
       {
         "fullName": "Screenshot",
         "name": "Screenshot"
+      },
+      {
+        "fullName": "Audio",
+        "name": "BuiltinAudio"
+      }
+    ]
+  },
+  "tetris-demo": {
+    "description": "A complete demo of a Tetris game, with all the concepts of modern Tetris such as SRS (Super Rotation System) and ghost piece, with high scores, music, sound effects.\n",
+    "usedExtensions": [
+      {
+        "fullName": "Sprite",
+        "name": "Sprite"
+      },
+      {
+        "fullName": "Text object",
+        "name": "TextObject"
+      },
+      {
+        "fullName": "Text entry object",
+        "name": "TextEntryObject"
+      },
+      {
+        "fullName": "",
+        "name": ""
+      },
+      {
+        "fullName": "Scene management features",
+        "name": "BuiltinScene"
+      },
+      {
+        "fullName": "Variable features",
+        "name": "BuiltinVariables"
+      },
+      {
+        "fullName": "Features for all objects",
+        "name": "BuiltinObject"
+      },
+      {
+        "fullName": "Mouse features",
+        "name": "BuiltinMouse"
+      },
+      {
+        "fullName": "Standard events",
+        "name": "BuiltinCommonInstructions"
+      },
+      {
+        "fullName": "Keyboard features",
+        "name": "BuiltinKeyboard"
+      },
+      {
+        "fullName": "Time",
+        "name": "BuiltinTime"
+      },
+      {
+        "fullName": "External layouts",
+        "name": "BuiltinExternalLayouts"
+      },
+      {
+        "fullName": "Storage",
+        "name": "BuiltinFile"
+      },
+      {
+        "fullName": "Filesystem",
+        "name": "FileSystem"
       },
       {
         "fullName": "Audio",
