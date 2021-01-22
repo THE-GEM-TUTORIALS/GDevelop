@@ -1184,6 +1184,8 @@ const MainFrame = (props: Props) => {
             networkPreview: !!networkPreview,
             hotReload: !!hotReload,
             projectDataOnlyExport: !!projectDataOnlyExport,
+            getIsMenuBarHiddenInPreview:
+              preferences.getIsMenuBarHiddenInPreview,
           })
         )
         .catch(error => {
@@ -1202,6 +1204,7 @@ const MainFrame = (props: Props) => {
       eventsFunctionsExtensionsState,
       previewState,
       state.editorTabs,
+      preferences.getIsMenuBarHiddenInPreview,
     ]
   );
 
@@ -1640,6 +1643,11 @@ const MainFrame = (props: Props) => {
                 _showSnackMessage(i18n._(t`Project properly saved`));
 
                 if (fileMetadata) {
+                  preferences.insertRecentProjectFile({
+                    fileMetadata,
+                    storageProviderName: getStorageProvider().internalName,
+                  });
+
                   setState(state => ({
                     ...state,
                     currentFileMetadata: fileMetadata,
@@ -1671,6 +1679,8 @@ const MainFrame = (props: Props) => {
       setState,
       state.editorTabs,
       _showSnackMessage,
+      getStorageProvider,
+      preferences,
     ]
   );
 
