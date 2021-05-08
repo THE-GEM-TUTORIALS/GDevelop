@@ -1,4 +1,6 @@
 namespace gdjs {
+  import PIXI = GlobalPIXIModule.PIXI;
+
   class TiledSpriteRuntimeObjectPixiRenderer {
     _object: gdjs.TiledSpriteRuntimeObject;
     _tiledSprite: PIXI.TilingSprite;
@@ -105,6 +107,14 @@ namespace gdjs {
         ';' +
         Math.floor(rgb[2] * 255)
       );
+    }
+
+    getTextureWidth() {
+      return this._tiledSprite.texture.width;
+    }
+
+    getTextureHeight() {
+      return this._tiledSprite.texture.height;
     }
   }
 

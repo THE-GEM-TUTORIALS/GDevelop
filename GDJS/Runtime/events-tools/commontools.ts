@@ -29,6 +29,47 @@ namespace gdjs {
       };
 
       /**
+       * Compares the boolean value of a variable.
+       * Equivalent to `variable.getAsBoolean() === boolean`.
+       * This shortcut function is needed for events code generation.
+       *
+       * @param {gdjs.Variable} variable
+       * @param {boolean} compareWith
+       * @returns {boolean}
+       * @private
+       */
+      export const getVariableBoolean = function (
+        variable: gdjs.Variable,
+        compareWith: boolean
+      ): boolean {
+        return variable.getAsBoolean() === compareWith;
+      };
+
+      /**
+       * Set the boolean value of a variable. Equivalent to `variable.setBoolean()`.
+       * This shortcut function is needed for events code generation.
+       *
+       * @param {gdjs.Variable} variable
+       * @param {boolean} bool The new boolean value of the variable.
+       * @private
+       */
+      export const setVariableBoolean = function (
+        variable: gdjs.Variable,
+        newValue: boolean
+      ) {
+        variable.setBoolean(newValue);
+      };
+
+      /**
+       * Toggles the boolean value of a variable.
+       * @param {gdjs.Variable} variable Variable.
+       * @private
+       */
+      export const toggleVariableBoolean = function (variable: gdjs.Variable) {
+        variable.setBoolean(!variable.getAsBoolean());
+      };
+
+      /**
        * Check if a scene variable exists.
        * @param runtimeScene The scene.
        * @param variableName Name of the scene variable.
@@ -89,6 +130,46 @@ namespace gdjs {
       };
 
       /**
+       * Pushes a variable onto an array.
+       * @param {gdjs.Variable} array
+       * @param {gdjs.Variable} variable
+       * @private
+       */
+      export const variablePushCopy = function (
+        array: gdjs.Variable,
+        variable: gdjs.Variable
+      ) {
+        array.pushVariableCopy(variable);
+      };
+
+      /**
+       * Pushes a value onto an array.
+       * @param {gdjs.Variable} array
+       * @param {string | float | boolean} value
+       * @private
+       */
+      export const valuePush = function (
+        array: gdjs.Variable,
+        value: string | float | boolean
+      ) {
+        array.pushValue(value);
+      };
+
+      /**
+       * Removes an index from an array.
+       *
+       * @param {gdjs.Variable} array
+       * @param {number} index
+       * @private
+       */
+      export const variableRemoveAt = function (
+        array: gdjs.Variable,
+        index: number
+      ) {
+        array.removeAtIndex(index);
+      };
+
+      /**
        * Get the number of children in a variable.
        * @param variable Variable.
        * @returns The number of children in the variable.
@@ -96,10 +177,7 @@ namespace gdjs {
       export const getVariableChildCount = function (
         variable: gdjs.Variable
       ): number {
-        if (variable.isStructure() == false) {
-          return 0;
-        }
-        return Object.keys(variable.getAllChildren()).length;
+        return variable.getChildrenCount();
       };
 
       /**
@@ -129,6 +207,21 @@ namespace gdjs {
        */
       export const logicalNegation = function (bool: boolean): boolean {
         return !bool;
+      };
+
+      /**
+       * Normalize a value between `min` and `max` to a value between 0 and 1.
+       * @param {number} val The value to normalize
+       * @param {number} min The minimum
+       * @param {number} max The maximum
+       * @returns The normalized value between 0 and 1
+       */
+      export const normalize = function (
+        val: float,
+        min: float,
+        max: float
+      ): number {
+        return min === max ? max : (val - min) / (max - min);
       };
 
       /**
@@ -364,6 +457,32 @@ namespace gdjs {
        */
       export const trunc = function (x: float): number {
         return x | 0;
+      };
+
+      /**
+       * Compute the X position when given an angle and distance relative to the origin (0;0).
+       * This is also known as getting the cartesian coordinates of a 2D vector, using its polar coordinates.
+       * @param angle The angle, in degrees.
+       * @param distance The distance from the object, in pixels.
+       */
+      export const getXFromAngleAndDistance = function (
+        angle: float,
+        distance: float
+      ): number {
+        return distance * Math.cos(gdjs.toRad(angle));
+      };
+
+      /**
+       * Compute the Y position when given an angle and distance relative to the origin (0;0).
+       * This is also known as getting the cartesian coordinates of a 2D vector, using its polar coordinates.
+       * @param angle The angle, in degrees.
+       * @param distance The distance from the object, in pixels.
+       */
+      export const getYFromAngleAndDistance = function (
+        angle: float,
+        distance: float
+      ): number {
+        return distance * Math.sin(gdjs.toRad(angle));
       };
     }
   }

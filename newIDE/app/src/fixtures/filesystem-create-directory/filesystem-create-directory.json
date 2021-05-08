@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "landscape",
     "packageName": "com.example.gamename",
-    "projectUuid": "0f7b6145-f190-48ed-b1cb-323bb0ee98c3",
+    "projectUuid": "411dcc7a-5687-4899-a62f-b696cc36334a",
     "scaleMode": "linear",
     "sizeOnStartupMode": "adaptWidth",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -180,6 +180,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -207,10 +208,12 @@
       "variables": [
         {
           "name": "ClickDesktop",
+          "type": "string",
           "value": ""
         },
         {
           "name": "ClickDocuments",
+          "type": "string",
           "value": ""
         }
       ],
@@ -222,7 +225,7 @@
           "layer": "",
           "locked": false,
           "name": "Dir",
-          "persistentUuid": "0a1c4d65-e268-4abe-8169-7a27b5a828f5",
+          "persistentUuid": "079fbf89-e08e-4d4b-8e14-aa7f82df637e",
           "width": 0,
           "x": 10,
           "y": 25,
@@ -238,7 +241,7 @@
           "layer": "",
           "locked": false,
           "name": "Dir",
-          "persistentUuid": "7bd8630d-5519-433c-ba9e-10bdf2c69f46",
+          "persistentUuid": "6aea9adf-3e61-48f7-a274-5ecc94f7dcd7",
           "width": 0,
           "x": 10,
           "y": 135,
@@ -254,7 +257,7 @@
           "layer": "",
           "locked": false,
           "name": "Desktop",
-          "persistentUuid": "4104d4cb-80dd-4f90-ad81-a790bbfbac4f",
+          "persistentUuid": "5fafde38-7ce9-4d99-bec5-067d42a1bc59",
           "width": 0,
           "x": 100,
           "y": 50,
@@ -270,7 +273,7 @@
           "layer": "",
           "locked": false,
           "name": "Documents",
-          "persistentUuid": "5c21e138-cae4-43cf-83a0-faa525bb128f",
+          "persistentUuid": "999c7aa4-ea50-4dae-9a85-73f2e491ca09",
           "width": 0,
           "x": 100,
           "y": 160,
@@ -286,7 +289,7 @@
           "layer": "",
           "locked": false,
           "name": "HowerDocuments",
-          "persistentUuid": "992ba3be-780a-41f3-a0d2-07151ac9a20a",
+          "persistentUuid": "7130dd70-86aa-45b2-b455-de1ad0adcaf7",
           "width": 400,
           "x": 10,
           "y": 120,
@@ -302,7 +305,7 @@
           "layer": "",
           "locked": false,
           "name": "Select",
-          "persistentUuid": "ca8f46fa-ee1e-4e0c-b7f6-f110bed49c7c",
+          "persistentUuid": "77f2fbcb-8df0-4697-8663-86cff411f719",
           "width": 0,
           "x": 415,
           "y": 126,
@@ -318,7 +321,7 @@
           "layer": "",
           "locked": false,
           "name": "Select",
-          "persistentUuid": "d4293c53-defa-407d-b78b-72cb7d6eb464",
+          "persistentUuid": "920474c1-7765-48e0-8fd1-03fb1442edd2",
           "width": 0,
           "x": 512.867,
           "y": 338.5,
@@ -334,7 +337,7 @@
           "layer": "",
           "locked": false,
           "name": "CreateMessage",
-          "persistentUuid": "2f1da926-81d1-4501-89ba-7ce51234c9aa",
+          "persistentUuid": "f54204b1-ae72-47c4-b8e5-847c47dd6dfb",
           "width": 0,
           "x": 300,
           "y": 300,
@@ -350,7 +353,7 @@
           "layer": "",
           "locked": false,
           "name": "HowerDesktop",
-          "persistentUuid": "c983c407-3df5-4314-98a4-bbf89bf2ef59",
+          "persistentUuid": "0b182373-5548-4975-8d42-b9f731be412a",
           "width": 400,
           "x": 10,
           "y": 10,
@@ -811,6 +814,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -820,10 +824,12 @@
       "variables": [
         {
           "name": "Name",
+          "type": "string",
           "value": ""
         },
         {
           "name": "Error",
+          "type": "string",
           "value": ""
         }
       ],
@@ -835,7 +841,7 @@
           "layer": "",
           "locked": false,
           "name": "NewFileDesktop",
-          "persistentUuid": "459fc83b-240d-4197-92a2-e01b360c9777",
+          "persistentUuid": "e9a18252-24bf-4f12-b53b-ac31b486b04a",
           "width": 0,
           "x": 150,
           "y": 300,
@@ -851,7 +857,7 @@
           "layer": "",
           "locked": false,
           "name": "ErrorMessage",
-          "persistentUuid": "d3627b7d-d1d1-4f9a-a9c2-bd1cd427205f",
+          "persistentUuid": "7a2b785b-d969-462d-a34b-b827c84d941d",
           "width": 0,
           "x": 228,
           "y": 240,
@@ -1410,6 +1416,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -1419,10 +1426,12 @@
       "variables": [
         {
           "name": "Name",
+          "type": "string",
           "value": ""
         },
         {
           "name": "Error",
+          "type": "string",
           "value": ""
         }
       ],
@@ -1434,7 +1443,7 @@
           "layer": "",
           "locked": false,
           "name": "NewFileDocuments",
-          "persistentUuid": "ba66fa3a-6054-4e90-8597-3fbc88eaec29",
+          "persistentUuid": "8ab5852a-67dd-4d4f-b0e8-34e48726b9f5",
           "width": 0,
           "x": 150,
           "y": 300,
@@ -1450,7 +1459,7 @@
           "layer": "",
           "locked": false,
           "name": "ErrorMessage",
-          "persistentUuid": "50bec4ca-f6fb-42ad-af76-eb82315d819b",
+          "persistentUuid": "574d4fe3-4850-4806-88cf-bedee8a38e69",
           "width": 0,
           "x": 228,
           "y": 240,

@@ -176,6 +176,7 @@ export default function NewInstructionEditorDialog({
       <InstructionOrObjectSelector
         style={styles.fullHeightSelector}
         project={project}
+        scope={scope}
         currentTab={currentInstructionOrObjectSelectorTab}
         onChangeTab={setCurrentInstructionOrObjectSelectorTab}
         globalObjectsContainer={globalObjectsContainer}
@@ -242,6 +243,7 @@ export default function NewInstructionEditorDialog({
     <ResponsiveWindowMeasurer>
       {windowWidth => (
         <Dialog
+          onApply={onSubmit}
           actions={[
             <FlatButton
               label={<Trans>Cancel</Trans>}

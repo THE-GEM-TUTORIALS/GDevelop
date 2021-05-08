@@ -10,6 +10,11 @@
     factory((root.PixiTileMapHelper = {}));
   }
 })(typeof self !== 'undefined' ? self : this, function (exports) {
+  /** @typedef {GlobalPIXIModule.PIXI.Texture} PIXI.Texture */
+  /** @typedef {GlobalPIXIModule.PIXI.BaseTexture} PIXI.BaseTexture */
+  /** @typedef {GlobalPIXIModule.PIXI.Rectangle} PIXI.Rectangle */
+  const PIXI = GlobalPIXIModule.PIXI;
+
   /**
    * Information about one or more tiles. Loosely based on
    * https://doc.mapeditor.org/en/stable/reference/json-map-format/#tile-definition.
@@ -139,7 +144,6 @@
         const rect = new PIXI.Rectangle(x, y, tilewidth, tileheight);
         // @ts-ignore - atlasTexture is never null here.
         const texture = new PIXI.Texture(atlasTexture, rect);
-        texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
         textureCache[frame] = texture;
       } catch (error) {
@@ -286,15 +290,17 @@
     }
     const trim = orig.clone();
 
+    // Get the rotation "D8" number.
+    // See https://pixijs.io/examples/#/textures/texture-rotate.js
     let rotate = 0;
     if (flippedDiagonally) {
-      rotate = 6;
+      rotate = 10;
       if (!flippedHorizontally && flippedVertically) {
-        rotate = 14;
-      } else if (flippedHorizontally && !flippedVertically) {
-        rotate = 10;
-      } else if (flippedHorizontally && flippedVertically) {
         rotate = 2;
+      } else if (flippedHorizontally && !flippedVertically) {
+        rotate = 6;
+      } else if (flippedHorizontally && flippedVertically) {
+        rotate = 14;
       }
     } else {
       rotate = 0;
@@ -370,10 +376,14 @@
             const xPos = genericTileMapData.tileWidth * j;
             const yPos = genericTileMapData.tileHeight * i;
 
+            // The "globalTileUid" is the tile UID with encoded
+            // bits about the flipping/rotation of the tile.
             /** @type {number} */
             // @ts-ignore
             const globalTileUid = layerData[tileSlotIndex];
 
+            // Extract the tile UID and the texture.
+            const tileUid = extractTileUidFlippedStates(globalTileUid)[0];
             const tileTexture = findTileTextureInCache(
               genericTileMapData.textureCache,
               globalTileUid
@@ -382,7 +392,7 @@
               const tileData =
                 genericTileMapData.tiles &&
                 genericTileMapData.tiles.find(function (tile) {
-                  return tile.id === globalTileUid - 1;
+                  return tile.id === tileUid - 1;
                 });
 
               const pixiTilemapFrame = pixiTileMap.addFrame(
@@ -391,7 +401,9 @@
                 yPos
               );
 
-              // Animated tiles have a limitation with only being able to use frames arranged one to each other on the image resource
+              // Animated tiles have a limitation:
+              // they are only able to use frames arranged horizontally one next
+              // to each other on the atlas.
               if (tileData && tileData.animation) {
                 pixiTilemapFrame.tileAnimX(
                   genericTileMapData.tileWidth,
@@ -429,7 +441,9 @@
     tilesetResourceName
   ) => {
     const requestedTileMapDataId =
-      (tilesetResourceName || tilemapResourceName) +
+      tilemapResourceName +
+      '@' +
+      tilesetResourceName +
       '@' +
       atlasImageResourceName;
 

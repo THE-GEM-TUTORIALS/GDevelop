@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "default",
     "packageName": "com.example.gamename",
-    "projectUuid": "6b560972-6cd6-4328-a017-2b4896383fc6",
+    "projectUuid": "5391d811-92ee-4c43-888d-f999796b7a9c",
     "scaleMode": "linear",
     "sizeOnStartupMode": "",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -144,6 +144,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -153,6 +154,7 @@
       "variables": [
         {
           "name": "switch_animation",
+          "type": "string",
           "value": "0"
         }
       ],
@@ -164,7 +166,7 @@
           "layer": "",
           "locked": false,
           "name": "kenney",
-          "persistentUuid": "b4dd205b-e653-480e-91c2-a4d7e65187ec",
+          "persistentUuid": "cff00725-79b0-45cc-9eaf-f36aa4802ee0",
           "width": 0,
           "x": 338.011,
           "y": 257.511,
@@ -180,7 +182,7 @@
           "layer": "",
           "locked": false,
           "name": "message",
-          "persistentUuid": "eeb3fba9-eef9-4621-baf0-774cacd407a1",
+          "persistentUuid": "98dde681-a599-4eff-955d-42c8436de03d",
           "width": 0,
           "x": 144.894,
           "y": 28.0707,

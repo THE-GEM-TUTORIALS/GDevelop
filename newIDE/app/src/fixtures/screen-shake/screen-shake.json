@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "landscape",
     "packageName": "com.example.screenshake",
-    "projectUuid": "1b6a2366-de2b-4f73-aaf2-85dd542ef8cb",
+    "projectUuid": "30f7dee1-7b76-4bad-a3db-981b9258f013",
     "scaleMode": "linear",
     "sizeOnStartupMode": "adaptWidth",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -252,6 +252,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 70,
         "snap": true,
         "windowMask": true,
@@ -270,10 +271,12 @@
       "variables": [
         {
           "name": "Shakey",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "yPos",
+          "type": "string",
           "value": ""
         }
       ],
@@ -285,7 +288,7 @@
           "layer": "",
           "locked": false,
           "name": "Player",
-          "persistentUuid": "b17a8412-e0d5-4656-9470-e6481161c7b4",
+          "persistentUuid": "1909d89a-d943-4860-8646-dff2b3e58918",
           "width": 0,
           "x": 37.1229,
           "y": 290.508,
@@ -301,7 +304,7 @@
           "layer": "",
           "locked": false,
           "name": "Jumpthru",
-          "persistentUuid": "a8c85be6-072e-4f24-9914-0d237b042833",
+          "persistentUuid": "c6c7f5b5-e464-46cf-84f1-5c6155e446e8",
           "width": 0,
           "x": 208,
           "y": 310,
@@ -317,7 +320,7 @@
           "layer": "",
           "locked": false,
           "name": "Jumpthru",
-          "persistentUuid": "0ec3567c-a8fc-4296-a263-c89c77960676",
+          "persistentUuid": "a60ed73c-ab9f-4e93-ac72-a7afbcc78ec3",
           "width": 0,
           "x": 213,
           "y": 487,
@@ -333,7 +336,7 @@
           "layer": "",
           "locked": false,
           "name": "Jumpthru",
-          "persistentUuid": "bbf234d0-5a9c-46ab-b501-1785e8727a91",
+          "persistentUuid": "55574b41-7d81-47c9-a7e3-09d26ddf7098",
           "width": 0,
           "x": 438,
           "y": 393,
@@ -349,7 +352,7 @@
           "layer": "",
           "locked": false,
           "name": "TiledGrassPlatform",
-          "persistentUuid": "b194775a-12c0-425b-aadb-b761117d738d",
+          "persistentUuid": "68084a20-7f7e-4e07-8f72-ad56daafef27",
           "width": 1038,
           "x": -193,
           "y": 572,
@@ -365,7 +368,7 @@
           "layer": "",
           "locked": false,
           "name": "PlayerHitBox",
-          "persistentUuid": "0e7023c6-fc85-4af3-96e5-d25790773583",
+          "persistentUuid": "35e7c68e-17dc-41f7-8d53-17af758786e0",
           "width": 0,
           "x": 49.2766,
           "y": 291.738,
@@ -381,7 +384,7 @@
           "layer": "",
           "locked": false,
           "name": "Platform",
-          "persistentUuid": "b4511c64-5888-45ff-bc99-46ec972b8255",
+          "persistentUuid": "e686af76-81dd-4469-b431-aaab959cf0d6",
           "width": 0,
           "x": 194,
           "y": 500.569,
@@ -402,7 +405,7 @@
           "layer": "",
           "locked": false,
           "name": "BackgroundObjects",
-          "persistentUuid": "387e2967-344a-4b1c-bec9-186921887eb6",
+          "persistentUuid": "fc7e99a1-7b5d-403a-a523-86a2530d9889",
           "width": 0,
           "x": 536.785,
           "y": 503.015,
@@ -418,7 +421,7 @@
           "layer": "",
           "locked": false,
           "name": "BackgroundObjects",
-          "persistentUuid": "101f8fef-505d-462f-872b-a009d116efa4",
+          "persistentUuid": "2d5f0758-4e7c-48d7-ac5f-7357f7628aee",
           "width": 0,
           "x": -43,
           "y": 501,
@@ -439,7 +442,7 @@
           "layer": "",
           "locked": false,
           "name": "GoRight",
-          "persistentUuid": "3aa1b25f-1006-4388-9c98-f9110ebedb3b",
+          "persistentUuid": "dc647ac6-170e-407e-a365-238c179314a0",
           "width": 0,
           "x": 265.877,
           "y": 545.185,
@@ -1708,7 +1711,7 @@
   "externalEvents": [
     {
       "associatedLayout": "New scene",
-      "lastChangeTimeStamp": 1383154432,
+      "lastChangeTimeStamp": 1383154438,
       "name": "EnemiesManagement",
       "events": [
         {
@@ -2197,7 +2200,7 @@
     },
     {
       "associatedLayout": "New scene",
-      "lastChangeTimeStamp": 1383152000,
+      "lastChangeTimeStamp": 1383151997,
       "name": "ObjectsManagement",
       "events": [
         {
@@ -2255,7 +2258,7 @@
     },
     {
       "associatedLayout": "New scene",
-      "lastChangeTimeStamp": 1383152000,
+      "lastChangeTimeStamp": 1383151997,
       "name": "GUIManagement",
       "events": [
         {

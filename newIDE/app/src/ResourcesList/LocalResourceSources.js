@@ -31,7 +31,7 @@ export default [
           multiSelections,
           title: i18n._(t`Choose an audio file`),
           name: i18n._(t`Audio files`),
-          extensions: ['wav', 'mp3', 'ogg'],
+          extensions: ['aac', 'wav', 'mp3', 'ogg'],
         };
         return selectLocalResourcePath(
           i18n,
@@ -208,6 +208,50 @@ export default [
             jsonResource.setName(path.relative(projectPath, resourcePath));
 
             return jsonResource;
+          });
+        });
+      };
+
+      render() {
+        return null;
+      }
+    },
+  },
+  {
+    name: 'localBitmapFontFileOpener',
+    displayName: 'Choose a new bitmap font file (.fnt, .xml)',
+    kind: 'bitmapFont',
+    component: class LocalBitmapFontFileOpener extends Component<ResourceSourceComponentProps> {
+      chooseResources = (
+        project: gdProject,
+        multiSelections: boolean = true
+      ): Promise<Array<any>> => {
+        const { i18n, getLastUsedPath, setLastUsedPath } = this.props;
+        const options = {
+          multiSelections,
+          title: i18n._(t`Choose a bitmap font file`),
+          name: i18n._(t`FNT, XML file`),
+          extensions: ['fnt', 'xml'],
+        };
+        return selectLocalResourcePath(
+          i18n,
+          project,
+          options,
+          getLastUsedPath,
+          setLastUsedPath,
+          'bitmapFont'
+        ).then(resources => {
+          return resources.map(resourcePath => {
+            const bitmapFontResource = new gd.BitmapFontResource();
+            const projectPath = path.dirname(project.getProjectFile());
+            bitmapFontResource.setFile(
+              path.relative(projectPath, resourcePath)
+            );
+            bitmapFontResource.setName(
+              path.relative(projectPath, resourcePath)
+            );
+
+            return bitmapFontResource;
           });
         });
       };

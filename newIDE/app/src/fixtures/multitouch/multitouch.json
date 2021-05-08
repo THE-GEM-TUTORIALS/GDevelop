@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "default",
     "packageName": "",
-    "projectUuid": "9dbb280c-2ba0-4d97-a8fe-c79d41e648d4",
+    "projectUuid": "7c1cd509-d95b-4222-b14f-d2ca1f5a6212",
     "scaleMode": "linear",
     "sizeOnStartupMode": "",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -138,6 +138,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -153,7 +154,7 @@
           "layer": "",
           "locked": false,
           "name": "Explanation",
-          "persistentUuid": "227f14b8-4730-46e9-ac2e-6ca6e5701372",
+          "persistentUuid": "3ba868fc-3a6f-45d6-85a4-41876397e9c7",
           "width": 0,
           "x": 63,
           "y": 28,
@@ -172,6 +173,7 @@
           "variables": [
             {
               "name": "TouchId",
+              "type": "string",
               "value": "0"
             }
           ],

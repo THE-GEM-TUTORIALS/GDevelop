@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "landscape",
     "packageName": "com.example.gamename",
-    "projectUuid": "48bb4899-a2ea-4796-a61d-5782d5d88daa",
+    "projectUuid": "9ada6aa6-d65c-42a6-b2e0-284436e0c115",
     "scaleMode": "linear",
     "sizeOnStartupMode": "adaptWidth",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -147,6 +147,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -162,7 +163,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite",
-          "persistentUuid": "82a52365-e751-4897-8e05-fe31d94f74e3",
+          "persistentUuid": "edddabe2-4ee7-4157-90f6-3ccaa96156e2",
           "width": 0,
           "x": 556.402,
           "y": 101.694,
@@ -172,6 +173,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "2"
             }
           ]
@@ -183,7 +185,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite",
-          "persistentUuid": "681fd1aa-760d-4579-8dab-66fd527278cf",
+          "persistentUuid": "d8904911-5f05-4449-beab-3bff2009f5cd",
           "width": 0,
           "x": 65.3582,
           "y": 100.513,
@@ -193,6 +195,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "0"
             }
           ]
@@ -204,7 +207,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite",
-          "persistentUuid": "161806c3-34b2-4f47-ba1c-e7bfd64acdc5",
+          "persistentUuid": "bf878a31-d7e7-4d15-ad89-6c1c9085a3d0",
           "width": 0,
           "x": 319.143,
           "y": 99.333,
@@ -214,6 +217,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "1"
             }
           ]
@@ -225,7 +229,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite2",
-          "persistentUuid": "01b69293-b95f-4b66-afad-82baaa75164b",
+          "persistentUuid": "e01f952f-42d5-4404-bcf7-0c69ebe5981d",
           "width": 0,
           "x": 568.206,
           "y": 396.792,
@@ -235,6 +239,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "2"
             }
           ]
@@ -246,7 +251,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite2",
-          "persistentUuid": "6d053ac0-7dad-470a-8a80-796481920617",
+          "persistentUuid": "d4ae89b3-a770-4c4c-a5ad-f2ea252cb758",
           "width": 0,
           "x": 87.7857,
           "y": 395.612,
@@ -256,6 +261,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "0"
             }
           ]
@@ -267,7 +273,7 @@
           "layer": "",
           "locked": false,
           "name": "Sprite2",
-          "persistentUuid": "41e399b2-6bda-43f8-8336-653f91ad2132",
+          "persistentUuid": "fd4be205-d280-45a1-8e4d-452402b797c8",
           "width": 0,
           "x": 323.865,
           "y": 394.431,
@@ -277,6 +283,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "1"
             }
           ]
@@ -288,7 +295,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter2",
-          "persistentUuid": "aba99573-ff09-4bdf-88e6-eb12683a7648",
+          "persistentUuid": "e05756eb-7bea-4bfe-b245-553864fbba91",
           "width": 0,
           "x": 598.896,
           "y": 327.149,
@@ -298,6 +305,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "2"
             }
           ]
@@ -309,7 +317,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter2",
-          "persistentUuid": "d299780a-6695-41a0-a255-0fda72775f9c",
+          "persistentUuid": "1121f05a-326d-41fb-99d1-f42f45810fa7",
           "width": 0,
           "x": 116.115,
           "y": 322.427,
@@ -319,6 +327,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "0"
             }
           ]
@@ -330,7 +339,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter2",
-          "persistentUuid": "2a109e4c-a5b4-4ed8-9772-c0e519344856",
+          "persistentUuid": "2a310326-cb0b-4a5a-8a12-db30524fb260",
           "width": 0,
           "x": 351.014,
           "y": 325.969,
@@ -340,6 +349,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "1"
             }
           ]
@@ -351,7 +361,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter",
-          "persistentUuid": "87b7579b-e156-46bf-8911-57156d1c650d",
+          "persistentUuid": "36a6c2d5-1b20-47c9-8419-d5f5b596c0cc",
           "width": 0,
           "x": 604.798,
           "y": 52.1173,
@@ -361,6 +371,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "2"
             }
           ]
@@ -372,7 +383,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter",
-          "persistentUuid": "02635378-a848-4d2f-8c6f-abf3a25c4672",
+          "persistentUuid": "47d1c808-8321-4b40-bfe2-0cab89e0963f",
           "width": 0,
           "x": 111.394,
           "y": 43.8546,
@@ -382,6 +393,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "0"
             }
           ]
@@ -393,7 +405,7 @@
           "layer": "",
           "locked": false,
           "name": "Counter",
-          "persistentUuid": "8484de42-3fbd-4208-86b6-05d73e16858b",
+          "persistentUuid": "31e47fcb-2706-478d-8d57-a54ec78d9760",
           "width": 0,
           "x": 367.539,
           "y": 48.5762,
@@ -403,6 +415,7 @@
           "initialVariables": [
             {
               "name": "id",
+              "type": "string",
               "value": "1"
             }
           ]

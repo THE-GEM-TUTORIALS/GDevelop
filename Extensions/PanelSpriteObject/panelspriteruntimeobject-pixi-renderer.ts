@@ -1,4 +1,5 @@
 namespace gdjs {
+  import PIXI = GlobalPIXIModule.PIXI;
   class PanelSpriteRuntimeObjectPixiRenderer {
     _object: gdjs.PanelSpriteRuntimeObject;
     _spritesContainer: any;
@@ -6,6 +7,8 @@ namespace gdjs {
     _borderSprites: any;
     _alpha: float;
     _wasRendered: boolean = false;
+    _textureWidth = 0;
+    _textureHeight = 0;
 
     constructor(
       runtimeObject: gdjs.PanelSpriteRuntimeObject,
@@ -185,6 +188,8 @@ namespace gdjs {
         .getGame()
         .getImageManager()
         .getPIXITexture(textureName);
+      this._textureWidth = texture.width;
+      this._textureHeight = texture.height;
 
       function makeInsideTexture(rect) {
         //TODO
@@ -367,7 +372,16 @@ namespace gdjs {
         Math.floor(rgb[2] * 255)
       );
     }
+
+    getTextureWidth() {
+      return this._textureWidth;
+    }
+
+    getTextureHeight() {
+      return this._textureHeight;
+    }
   }
 
   export const PanelSpriteRuntimeObjectRenderer = PanelSpriteRuntimeObjectPixiRenderer;
+  export type PanelSpriteRuntimeObjectRenderer = PanelSpriteRuntimeObjectPixiRenderer;
 }

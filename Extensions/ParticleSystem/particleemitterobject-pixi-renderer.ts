@@ -5,6 +5,7 @@ This project is released under the MIT License.
 */
 
 namespace gdjs {
+  import PIXI = GlobalPIXIModule.PIXI;
   export class ParticleEmitterObjectPixiRenderer {
     renderer: any;
     emitter: any;
@@ -66,6 +67,7 @@ namespace gdjs {
         .getGame()
         .getRenderer()
         .getPIXIRenderer();
+      //@ts-expect-error Pixi has wrong type definitions for this method
       texture = pixiRenderer.generateTexture(graphics);
       const config = {
         color: {

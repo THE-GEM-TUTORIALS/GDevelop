@@ -5,8 +5,12 @@
  */
 #include "GDJS/IDE/ExporterHelper.h"
 
+#if defined(EMSCRIPTEN)
+#include <emscripten.h>
+#endif
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <sstream>
 #include <streambuf>
 #include <string>
@@ -18,6 +22,7 @@
 #include "GDCore/Extensions/Platform.h"
 #include "GDCore/Extensions/PlatformExtension.h"
 #include "GDCore/IDE/AbstractFileSystem.h"
+#include "GDCore/IDE/ExportedDependencyResolver.h"
 #include "GDCore/IDE/Project/ProjectResourcesCopier.h"
 #include "GDCore/IDE/ProjectStripper.h"
 #include "GDCore/IDE/SceneNameMangler.h"
@@ -36,40 +41,21 @@
 #undef CopyFile  // Disable an annoying macro
 
 namespace {
-
-std::map<gd::String, gd::String> GetExtensionDependencyExtraSettingValues(
-    const gd::Project &project,
-    const gd::String &extensionName,
-    const gd::DependencyMetadata &dependency) {
-  std::map<gd::String, gd::String> values;
-
-  for (const auto &extraSetting : dependency.GetAllExtraSettings()) {
-    const gd::String &type = extraSetting.second.GetType();
-    const gd::String extraSettingValue =
-        type == "ExtensionProperty"
-            ? project.GetExtensionProperties().GetValue(
-                  extensionName, extraSetting.second.GetValue())
-            : extraSetting.second.GetValue();
-
-    if (!extraSettingValue.empty())
-      values[extraSetting.first] = extraSettingValue;
-  }
-
-  return values;
-};
-
-bool AreMapKeysMissingElementOfSet(const std::map<gd::String, gd::String> &map,
-                                   const std::set<gd::String> &set) {
-  bool missingKey = false;
-  for (auto &key : set) {
-    if (map.find(key) == map.end()) {
-      missingKey = true;
-    }
-  }
-
-  return missingKey;
+double GetTimeNow() {
+#if defined(EMSCRIPTEN)
+  double currentTime = emscripten_get_now();
+  return currentTime;
+#else
+  return 0;
+#endif
 }
-
+double GetTimeSpent(double previousTime) { return GetTimeNow() - previousTime; }
+double LogTimeSpent(const gd::String &name, double previousTime) {
+  gd::LogStatus(name + " took " + gd::String::From(GetTimeSpent(previousTime)) +
+                "ms");
+  std::cout << std::endl;
+  return GetTimeNow();
+}
 }  // namespace
 
 namespace gdjs {
@@ -86,6 +72,7 @@ ExporterHelper::ExporterHelper(gd::AbstractFileSystem &fileSystem,
 
 bool ExporterHelper::ExportProjectForPixiPreview(
     const PreviewExportOptions &options) {
+  double previousTime = GetTimeNow();
   fs.MkDir(options.exportPath);
   fs.ClearDir(options.exportPath);
   std::vector<gd::String> includesFiles;
@@ -98,6 +85,8 @@ bool ExporterHelper::ExportProjectForPixiPreview(
   // Export resources (*before* generating events as some resources filenames
   // may be updated)
   ExportResources(fs, exportedProject, options.exportPath);
+
+  previousTime = LogTimeSpent("Resource export", previousTime);
 
   // Compatibility with GD <= 5.0-beta56
   // Stay compatible with text objects declaring their font as just a filename
@@ -116,6 +105,8 @@ bool ExporterHelper::ExportProjectForPixiPreview(
   // the engine)
   ExportEffectIncludes(exportedProject, includesFiles);
 
+  previousTime = LogTimeSpent("Include files export", previousTime);
+
   if (!options.projectDataOnlyExport) {
     // Generate events code
     if (!ExportEventsCode(exportedProject, codeOutputDir, includesFiles, true))
@@ -129,6 +120,8 @@ bool ExporterHelper::ExportProjectForPixiPreview(
           lastError);
       return false;
     }
+
+    previousTime = LogTimeSpent("Events code export", previousTime);
   }
 
   // Strip the project (*after* generating events as the events may use stripped
@@ -140,6 +133,8 @@ bool ExporterHelper::ExportProjectForPixiPreview(
   // runtimeGameOptions, since otherwise Cocos files will be passed to the
   // hot-reloader).
   RemoveIncludes(false, true, includesFiles);
+
+  previousTime = LogTimeSpent("Data stripping", previousTime);
 
   // Create the setup options passed to the gdjs.RuntimeGame
   gd::SerializerElement runtimeGameOptions;
@@ -174,6 +169,8 @@ bool ExporterHelper::ExportProjectForPixiPreview(
       fs, exportedProject, codeOutputDir + "/data.js", runtimeGameOptions);
   includesFiles.push_back(codeOutputDir + "/data.js");
 
+  previousTime = LogTimeSpent("Project data export", previousTime);
+
   // Copy all the dependencies and their source maps
   ExportIncludesAndLibs(includesFiles, options.exportPath, true);
 
@@ -186,6 +183,7 @@ bool ExporterHelper::ExportProjectForPixiPreview(
                            "gdjs.runtimeGameOptions"))
     return false;
 
+  previousTime = LogTimeSpent("Include and libs export", previousTime);
   return true;
 }
 
@@ -295,35 +293,36 @@ bool ExporterHelper::ExportCordovaFiles(const gd::Project &project,
           .FindAndReplace("<!-- GDJS_ICONS_IOS -->", makeIconsIos());
 
   gd::String plugins = "";
+  auto dependenciesAndExtensions =
+      gd::ExportedDependencyResolver::GetDependenciesFor(project, "cordova");
+  for (auto &dependencyAndExtension : dependenciesAndExtensions) {
+    const auto &dependency = dependencyAndExtension.GetDependency();
 
-  for (std::shared_ptr<gd::PlatformExtension> extension :
-       project.GetCurrentPlatform().GetAllPlatformExtensions()) {
-    for (gd::DependencyMetadata dependency : extension->GetAllDependencies()) {
-      if (dependency.GetDependencyType() == "cordova") {
-        gd::String plugin;
-        plugin += "<plugin name=\"" + dependency.GetExportName();
-        if (dependency.GetVersion() != "") {
-          plugin += "\" spec=\"" + dependency.GetVersion();
-        }
-        plugin += "\">\n";
-
-        auto extraSettingValues = GetExtensionDependencyExtraSettingValues(
-            project, extension->GetName(), dependency);
-
-        // For Cordova, all settings are considered a plugin variable.
-        for (auto &extraSetting : extraSettingValues) {
-          plugin += "\t\t<variable name=\"" + extraSetting.first +
-                    "\" value=\"" + extraSetting.second + "\" />\n";
-        }
-
-        plugin += "\t</plugin>";
-
-        // Don't include the plugin if an extra setting was not fulfilled.
-        bool missingSetting = AreMapKeysMissingElementOfSet(
-            extraSettingValues, dependency.GetRequiredExtraSettingsForExport());
-        if (!missingSetting) plugins += plugin;
-      }
+    gd::String plugin;
+    plugin += "<plugin name=\"" +
+              gd::Serializer::ToEscapedXMLString(dependency.GetExportName());
+    if (dependency.GetVersion() != "") {
+      plugin += "\" spec=\"" +
+                gd::Serializer::ToEscapedXMLString(dependency.GetVersion());
     }
+    plugin += "\">\n";
+
+    auto extraSettingValues = gd::ExportedDependencyResolver::
+        GetExtensionDependencyExtraSettingValues(project,
+                                                 dependencyAndExtension);
+
+    // For Cordova, all settings are considered a plugin variable.
+    for (auto &extraSetting : extraSettingValues) {
+      plugin += "    <variable name=\"" +
+                gd::Serializer::ToEscapedXMLString(extraSetting.first) +
+                "\" value=\"" +
+                gd::Serializer::ToEscapedXMLString(extraSetting.second) +
+                "\" />\n";
+    }
+
+    plugin += "</plugin>";
+
+    plugins += plugin;
   }
 
   // TODO: migrate the plugins to the package.json
@@ -466,6 +465,8 @@ bool ExporterHelper::ExportElectronFiles(const gd::Project &project,
                                          gd::String exportDir) {
   gd::String jsonName =
       gd::Serializer::ToJSON(gd::SerializerElement(project.GetName()));
+  gd::String jsonPackageName =
+      gd::Serializer::ToJSON(gd::SerializerElement(project.GetPackageName()));
   gd::String jsonAuthor =
       gd::Serializer::ToJSON(gd::SerializerElement(project.GetAuthor()));
   gd::String jsonVersion =
@@ -480,33 +481,30 @@ bool ExporterHelper::ExportElectronFiles(const gd::Project &project,
     gd::String str =
         fs.ReadFile(gdjsRoot + "/Runtime/Electron/package.json")
             .FindAndReplace("\"GDJS_GAME_NAME\"", jsonName)
+            .FindAndReplace("\"GDJS_GAME_PACKAGE_NAME\"", jsonPackageName)
             .FindAndReplace("\"GDJS_GAME_AUTHOR\"", jsonAuthor)
             .FindAndReplace("\"GDJS_GAME_VERSION\"", jsonVersion)
             .FindAndReplace("\"GDJS_GAME_MANGLED_NAME\"", jsonMangledName);
 
     gd::String packages = "";
 
-    for (std::shared_ptr<gd::PlatformExtension> extension :
-         project.GetCurrentPlatform()
-             .GetAllPlatformExtensions()) {  // TODO Add a way to select only
-                                             // used Extensions
-      for (gd::DependencyMetadata dependency :
-           extension->GetAllDependencies()) {
-        if (dependency.GetDependencyType() == "npm") {
-          if (dependency.GetVersion() == "") {
-            gd::LogError(
-                "Latest Version not available for NPM dependencies, "
-                "dependency " +
-                dependency.GetName() +
-                " is not exported. Please specify a version when calling "
-                "addDependency.");
-            continue;
-          }
-          packages += "\n\t\"" + dependency.GetExportName() + "\": \"" +
-                      dependency.GetVersion() + "\",";
-          // For node extra settings are ignored
-        }
+    auto dependenciesAndExtensions =
+        gd::ExportedDependencyResolver::GetDependenciesFor(project, "npm");
+    for (auto &dependencyAndExtension : dependenciesAndExtensions) {
+      const auto &dependency = dependencyAndExtension.GetDependency();
+      if (dependency.GetVersion() == "") {
+        gd::LogError(
+            "Latest Version not available for NPM dependencies, "
+            "dependency " +
+            dependency.GetName() +
+            " is not exported. Please specify a version when calling "
+            "addDependency.");
+        continue;
       }
+
+      // For Electron, extra settings of dependencies are ignored.
+      packages += "\n\t\"" + dependency.GetExportName() + "\": \"" +
+                  dependency.GetVersion() + "\",";
     }
 
     if (!packages.empty()) {
@@ -602,7 +600,6 @@ void ExporterHelper::AddLibsInclude(bool pixiRenderers,
   InsertUnique(includesFiles, "libs/jshashtable.js");
   InsertUnique(includesFiles, "gd.js");
   InsertUnique(includesFiles, "gd-splash-image.js");
-  InsertUnique(includesFiles, "libs/hshg.js");
   InsertUnique(includesFiles, "libs/rbush.js");
   InsertUnique(includesFiles, "inputmanager.js");
   InsertUnique(includesFiles, "jsonmanager.js");
@@ -647,6 +644,7 @@ void ExporterHelper::AddLibsInclude(bool pixiRenderers,
     InsertUnique(includesFiles, "pixi-renderers/runtimescene-pixi-renderer.js");
     InsertUnique(includesFiles, "pixi-renderers/layer-pixi-renderer.js");
     InsertUnique(includesFiles, "pixi-renderers/pixi-image-manager.js");
+    InsertUnique(includesFiles, "pixi-renderers/pixi-bitmapfont-manager.js");
     InsertUnique(includesFiles,
                  "pixi-renderers/spriteruntimeobject-pixi-renderer.js");
     InsertUnique(includesFiles,
@@ -663,6 +661,7 @@ void ExporterHelper::AddLibsInclude(bool pixiRenderers,
   if (cocosRenderers) {
     InsertUnique(includesFiles, "cocos-renderers/cocos-director-manager.js");
     InsertUnique(includesFiles, "cocos-renderers/cocos-image-manager.js");
+    InsertUnique(includesFiles, "cocos-renderers/cocos-bitmapfont-manager.js");
     InsertUnique(includesFiles, "cocos-renderers/cocos-tools.js");
     InsertUnique(includesFiles, "cocos-renderers/layer-cocos-renderer.js");
     InsertUnique(includesFiles,

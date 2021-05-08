@@ -80,6 +80,8 @@ std::shared_ptr<Resource> ResourcesManager::CreateResource(
     return std::make_shared<VideoResource>();
   else if (kind == "json")
     return std::make_shared<JsonResource>();
+  else if (kind == "bitmapFont")
+    return std::make_shared<BitmapFontResource>();
 
   std::cout << "Bad resource created (type: " << kind << ")" << std::endl;
   return std::make_shared<Resource>();
@@ -153,6 +155,28 @@ bool ImageResource::UpdateProperty(const gd::String& name,
     smooth = value == "1";
   else if (name == _("Always loaded in memory"))
     alwaysLoaded = value == "1";
+
+  return true;
+}
+
+std::map<gd::String, gd::PropertyDescriptor> AudioResource::GetProperties() const {
+  std::map<gd::String, gd::PropertyDescriptor> properties;
+  properties[_("Preload as sound")]
+      .SetValue(preloadAsSound ? "true" : "false")
+      .SetType("Boolean");
+  properties[_("Preload as music")]
+      .SetValue(preloadAsMusic ? "true" : "false")
+      .SetType("Boolean");
+
+  return properties;
+}
+
+bool AudioResource::UpdateProperty(const gd::String& name,
+                                   const gd::String& value) {
+  if (name == _("Preload as sound"))
+    preloadAsSound = value == "1";
+  else if (name == _("Preload as music"))
+    preloadAsMusic = value == "1";
 
   return true;
 }
@@ -538,12 +562,16 @@ void AudioResource::SetFile(const gd::String& newFile) {
 void AudioResource::UnserializeFrom(const SerializerElement& element) {
   SetUserAdded(element.GetBoolAttribute("userAdded"));
   SetFile(element.GetStringAttribute("file"));
+  SetPreloadAsMusic(element.GetBoolAttribute("preloadAsMusic"));
+  SetPreloadAsSound(element.GetBoolAttribute("preloadAsSound"));
 }
 
 #if defined(GD_IDE_ONLY)
 void AudioResource::SerializeTo(SerializerElement& element) const {
   element.SetAttribute("userAdded", IsUserAdded());
   element.SetAttribute("file", GetFile());
+  element.SetAttribute("preloadAsMusic", PreloadAsMusic());
+  element.SetAttribute("preloadAsSound", PreloadAsSound());
 }
 #endif
 
@@ -626,6 +654,26 @@ bool JsonResource::UpdateProperty(const gd::String& name,
   return true;
 }
 
+#endif
+
+void BitmapFontResource::SetFile(const gd::String& newFile) {
+  file = newFile;
+
+  // Convert all backslash to slashs.
+  while (file.find('\\') != gd::String::npos)
+    file.replace(file.find('\\'), 1, "/");
+}
+
+void BitmapFontResource::UnserializeFrom(const SerializerElement& element) {
+  SetUserAdded(element.GetBoolAttribute("userAdded"));
+  SetFile(element.GetStringAttribute("file"));
+}
+
+#if defined(GD_IDE_ONLY)
+void BitmapFontResource::SerializeTo(SerializerElement& element) const {
+  element.SetAttribute("userAdded", IsUserAdded());
+  element.SetAttribute("file", GetFile());
+}
 #endif
 
 #if defined(GD_IDE_ONLY)

@@ -1,5 +1,8 @@
 const initializeGDevelopJs = require('../../Binaries/embuild/GDevelop.js/libGD.js');
 const path = require('path');
+const {
+  makeFakeAbstractFileSystem,
+} = require('../TestUtils/FakeAbstractFileSystem');
 const extend = require('extend');
 
 describe('libGD.js', function () {
@@ -99,9 +102,19 @@ describe('libGD.js', function () {
     });
 
     it('should have a list of extensions', function () {
-      expect(typeof project.getUsedExtensions().size()).toBe('number');
-      project.getUsedExtensions().clear();
-      expect(project.getUsedExtensions().size()).toBe(0);
+      expect(
+        gd.UsedExtensionsFinder.scanProject(project)
+          .toNewVectorString()
+          .toJSArray()
+      ).toEqual([]);
+
+      project.insertNewObject(project, 'Sprite', 'MyObject', 0);
+
+      expect(
+        gd.UsedExtensionsFinder.scanProject(project)
+          .toNewVectorString()
+          .toJSArray()
+      ).toEqual(['Sprite']);
     });
 
     it('handles events functions extensions', function () {
@@ -567,7 +580,7 @@ describe('libGD.js', function () {
           .get('Animation')
           .getValue()
       ).toBe('2');
-      expect(initialInstance.getRawFloatProperty('animation')).toBe(2);
+      expect(initialInstance.getRawDoubleProperty('animation')).toBe(2);
     });
     it('can be serialized', function () {
       expect(initialInstance.serializeTo).not.toBe(undefined);
@@ -722,17 +735,22 @@ describe('libGD.js', function () {
 
     it('should have initial value', function () {
       expect(variable.getValue()).toBe(0);
-      expect(variable.isNumber()).toBe(true);
+      expect(variable.getType()).toBe(gd.Variable.Number);
     });
     it('can have a value', function () {
       variable.setValue(5);
       expect(variable.getValue()).toBe(5);
-      expect(variable.isNumber()).toBe(true);
+      expect(variable.getType()).toBe(gd.Variable.Number);
     });
-    it('can have a string', function () {
+    it('can have a string value', function () {
       variable.setString('Hello');
       expect(variable.getString()).toBe('Hello');
-      expect(variable.isNumber()).toBe(false);
+      expect(variable.getType()).toBe(gd.Variable.String);
+    });
+    it('can have a boolean value', function () {
+      variable.setBool(true);
+      expect(variable.getBool()).toBe(true);
+      expect(variable.getType()).toBe(gd.Variable.Boolean);
     });
     it('can be a structure', function () {
       variable.getChild('FirstChild').setValue(1);
@@ -741,11 +759,16 @@ describe('libGD.js', function () {
       expect(variable.hasChild('SecondChild')).toBe(true);
       expect(variable.hasChild('NotExisting')).toBe(false);
       expect(variable.getChild('SecondChild').getString()).toBe('two');
+      expect(variable.getType()).toBe(gd.Variable.Structure);
       variable.removeChild('FirstChild');
       expect(variable.hasChild('FirstChild')).toBe(false);
+      expect(variable.getType()).toBe(gd.Variable.Structure);
+      variable.removeChild('SecondChild');
+      expect(variable.getType()).toBe(gd.Variable.Structure);
     });
     it('can expose its children', function () {
       variable.getChild('FirstChild').setValue(1);
+      variable.getChild('SecondChild').setValue(1);
 
       var childrenNames = variable.getAllChildrenNames();
       expect(childrenNames.size()).toBe(2);
@@ -758,34 +781,75 @@ describe('libGD.js', function () {
 
       expect(childrenNames.size()).toBe(2);
     });
+    it('can be an array', function () {
+      variable.getAtIndex(0).setValue(1);
+      expect(variable.getType()).toBe(gd.Variable.Array);
+      variable.getAtIndex(2).setString('three');
+      expect(variable.getAllChildrenArray().size()).toBe(3);
+      expect(variable.getAtIndex(0).getValue()).toBe(1);
+      expect(variable.getAtIndex(1).getValue()).toBe(0);
+      expect(variable.getAtIndex(2).getType()).toBe(gd.Variable.String);
+      variable.removeAtIndex(2);
+      expect(variable.getType()).toBe(gd.Variable.Array);
+      variable.removeAtIndex(1);
+      variable.removeAtIndex(0);
+      expect(variable.getType()).toBe(gd.Variable.Array);
+    });
     it('can search inside children and remove them recursively', function () {
       var parentVariable = new gd.Variable();
 
       var child1 = parentVariable.getChild('Child1');
       var child2 = parentVariable.getChild('Child2');
-      var grandChild = parentVariable.getChild('Child1').getChild('GrandChild');
-      expect(parentVariable.contains(grandChild, true)).toBe(true);
-      expect(parentVariable.contains(grandChild, false)).toBe(false);
+      var grandChild1 = parentVariable
+        .getChild('Child1')
+        .getChild('GrandChild');
+      var grandChild2 = parentVariable.getChild('Child2').getAtIndex(0);
+
+      expect(parentVariable.contains(grandChild1, true)).toBe(true);
+      expect(parentVariable.contains(grandChild1, false)).toBe(false);
+      expect(parentVariable.contains(grandChild2, true)).toBe(true);
+      expect(parentVariable.contains(grandChild2, false)).toBe(false);
       expect(parentVariable.contains(child1, true)).toBe(true);
       expect(parentVariable.contains(child2, true)).toBe(true);
       expect(parentVariable.contains(child1, false)).toBe(true);
       expect(parentVariable.contains(child2, false)).toBe(true);
-      expect(child1.contains(grandChild, true)).toBe(true);
-      expect(child1.contains(grandChild, false)).toBe(true);
-      expect(child2.contains(grandChild, true)).toBe(false);
-      expect(child2.contains(grandChild, false)).toBe(false);
-      expect(grandChild.contains(grandChild, true)).toBe(false);
-      expect(grandChild.contains(grandChild, false)).toBe(false);
-      expect(grandChild.contains(child1, true)).toBe(false);
-      expect(grandChild.contains(child2, true)).toBe(false);
-      expect(grandChild.contains(parentVariable, true)).toBe(false);
-      expect(grandChild.contains(child1, false)).toBe(false);
-      expect(grandChild.contains(child2, false)).toBe(false);
-      expect(grandChild.contains(parentVariable, false)).toBe(false);
 
-      parentVariable.removeRecursively(grandChild);
+      expect(child1.contains(grandChild1, true)).toBe(true);
+      expect(child1.contains(grandChild1, false)).toBe(true);
+      expect(child2.contains(grandChild1, true)).toBe(false);
+      expect(child2.contains(grandChild1, false)).toBe(false);
+
+      expect(child1.contains(grandChild2, true)).toBe(false);
+      expect(child1.contains(grandChild2, false)).toBe(false);
+      expect(child2.contains(grandChild2, true)).toBe(true);
+      expect(child2.contains(grandChild2, false)).toBe(true);
+
+      expect(grandChild1.contains(grandChild1, true)).toBe(false);
+      expect(grandChild1.contains(grandChild1, false)).toBe(false);
+      expect(grandChild1.contains(child1, true)).toBe(false);
+      expect(grandChild1.contains(child2, true)).toBe(false);
+      expect(grandChild1.contains(parentVariable, true)).toBe(false);
+      expect(grandChild1.contains(child1, false)).toBe(false);
+      expect(grandChild1.contains(child2, false)).toBe(false);
+      expect(grandChild1.contains(parentVariable, false)).toBe(false);
+
+      expect(grandChild2.contains(grandChild1, true)).toBe(false);
+      expect(grandChild2.contains(grandChild1, false)).toBe(false);
+      expect(grandChild2.contains(child1, true)).toBe(false);
+      expect(grandChild2.contains(child2, true)).toBe(false);
+      expect(grandChild2.contains(parentVariable, true)).toBe(false);
+      expect(grandChild2.contains(child1, false)).toBe(false);
+      expect(grandChild2.contains(child2, false)).toBe(false);
+      expect(grandChild2.contains(parentVariable, false)).toBe(false);
+
+      parentVariable.removeRecursively(grandChild1);
       expect(child1.hasChild('GrandChild')).toBe(false);
       expect(child1.getChildrenCount()).toBe(0);
+      expect(parentVariable.getChildrenCount()).toBe(2);
+
+      parentVariable.removeRecursively(grandChild2);
+      expect(child2.getAllChildrenArray().size()).toBe(0);
+      expect(child2.getChildrenCount()).toBe(0);
       expect(parentVariable.getChildrenCount()).toBe(2);
 
       parentVariable.removeRecursively(child2);
@@ -881,8 +945,26 @@ describe('libGD.js', function () {
     });
   });
 
-  describe('gd.VideoResource', function () {
-    it('should have name and file', function () {
+  describe('gd.BitmapFontResource', function() {
+    it('should have name and file', function() {
+      const resource = new gd.BitmapFontResource();
+      resource.setName('MyBitmapFontResource');
+      resource.setFile('MyBitmapFontFile');
+      expect(resource.getName()).toBe('MyBitmapFontResource');
+      expect(resource.getFile()).toBe('MyBitmapFontFile');
+      resource.delete();
+    });
+    it('can have metadata', function() {
+      const resource = new gd.BitmapFontResource();
+      expect(resource.getMetadata()).toBe('');
+      resource.setMetadata(JSON.stringify({ hello: 'world' }));
+      expect(resource.getMetadata()).toBe('{"hello":"world"}');
+      resource.delete();
+    });
+  });
+
+  describe('gd.VideoResource', function() {
+    it('should have name and file', function() {
       const resource = new gd.VideoResource();
       resource.setName('MyVideoResource');
       resource.setFile('MyVideoFile');
@@ -1518,7 +1600,7 @@ describe('libGD.js', function () {
           return true;
         }
         if (propertyName === 'My other instance property') {
-          instance.setRawFloatProperty('instanceprop2', parseFloat(newValue));
+          instance.setRawDoubleProperty('instanceprop2', parseFloat(newValue));
           return true;
         }
 
@@ -1537,7 +1619,7 @@ describe('libGD.js', function () {
           .setValue(instance.getRawStringProperty('instanceprop1'));
         properties
           .getOrCreate('My other instance property')
-          .setValue(instance.getRawFloatProperty('instanceprop2').toString())
+          .setValue(instance.getRawDoubleProperty('instanceprop2').toString())
           .setType('number');
 
         return properties;
@@ -2249,12 +2331,6 @@ describe('libGD.js', function () {
   describe('gd.MetadataProvider', function () {
     it('can return metadata about expressions (even if they do not exist)', function () {
       expect(
-        gd.MetadataProvider.hasExpression(
-          gd.JsPlatform.get(),
-          'NotExistingExpression'
-        )
-      ).toBe(false);
-      expect(
         gd.MetadataProvider.getExpressionMetadata(
           gd.JsPlatform.get(),
           'NotExistingExpression'
@@ -2331,24 +2407,7 @@ describe('libGD.js', function () {
       project.getResourcesManager().addResource(resource4);
       project.getResourcesManager().addResource(resource5);
 
-      // Create a fake file system
-      const fs = new gd.AbstractFileSystemJS();
-      fs.mkDir = fs.clearDir = function () {};
-      fs.getTempDir = function (path) {
-        return '/tmp/';
-      };
-      fs.fileNameFrom = function (fullpath) {
-        return path.posix.basename(fullpath);
-      };
-      fs.dirNameFrom = function (fullpath) {
-        return path.posix.dirname(fullpath);
-      };
-      fs.makeAbsolute = function (relativePath, baseDirectory) {
-        return path.posix.resolve(baseDirectory, relativePath);
-      };
-      fs.makeRelative = function (absolutePath, baseDirectory) {
-        return path.posix.relative(baseDirectory, absolutePath);
-      };
+      const fs = makeFakeAbstractFileSystem(gd, {});
 
       // Check that ResourcesMergingHelper can update the filenames
       const resourcesMergingHelper = new gd.ResourcesMergingHelper(fs);
@@ -2406,37 +2465,7 @@ describe('libGD.js', function () {
       project.getResourcesManager().addResource(resource4);
       project.getResourcesManager().addResource(resource5);
 
-      // Create a fake file system
-      const fs = new gd.AbstractFileSystemJS();
-      fs.mkDir = fs.clearDir = function () {};
-      fs.getTempDir = function (path) {
-        return '/tmp/';
-      };
-      fs.fileNameFrom = function (fullPath) {
-        return path.posix.basename(fullPath);
-      };
-      fs.dirNameFrom = function (fullPath) {
-        return path.posix.dirname(fullPath);
-      };
-      fs.makeAbsolute = function (relativePath, baseDirectory) {
-        return path.posix.resolve(baseDirectory, relativePath);
-      };
-      fs.makeRelative = function (absolutePath, baseDirectory) {
-        return path.posix.relative(baseDirectory, absolutePath);
-      };
-      fs.isAbsolute = function (fullPath) {
-        return path.posix.isAbsolute(fullPath);
-      };
-      fs.dirExists = function (directoryPath) {
-        return true; // Fake that all directory required exist.
-      };
-
-      // In particular, create a mock copyFile, that we can track to verify
-      // files are properly copied.
-      fs.copyFile = jest.fn();
-      fs.copyFile.mockImplementation(function (srcPath, destPath) {
-        return true;
-      });
+      const fs = makeFakeAbstractFileSystem(gd, {});
 
       // Check that resources can be copied to another folder:
       // * including absolute files.
@@ -2717,7 +2746,7 @@ describe('libGD.js', function () {
       parser.delete();
     }
 
-    it('can parse valid expressions', function () {
+    it('can parse valid expressions (number)', function () {
       testExpression('number', '1+1');
       testExpression('number', '2-3');
       testExpression('number', '4/5');
@@ -2728,6 +2757,20 @@ describe('libGD.js', function () {
       testExpression('number', '  15 +    16 - 17   ');
       testExpression('number', '.14');
       testExpression('number', '3.');
+    });
+
+    it('can parse valid expressions (string)', function () {
+      testExpression('string', '"Hello"');
+      testExpression('string', '"Hello" + " " + "World"');
+    });
+
+    it('can parse valid expressions ("number|string" type)', function () {
+      testExpression('number|string', '1+1');
+      testExpression('number|string', '2-3');
+      testExpression('number|string', '4/5');
+      testExpression('number|string', '6*7');
+      testExpression('number|string', '"Hello"');
+      testExpression('number|string', '"Hello" + " " + "World"');
     });
 
     it('report errors in invalid expressions', function () {
@@ -2755,6 +2798,32 @@ describe('libGD.js', function () {
         '="Mynewscene"',
         'You must enter a text (between quotes) or a valid expression call.',
         0
+      );
+    });
+    it('report errors in invalid expressions ("number|string" type)', function () {
+      testExpression(
+        'number|string',
+        '123 + "World"',
+        'You entered a text, but a number was expected.',
+        6
+      );
+      testExpression(
+        'number|string',
+        '"World" + 123',
+        'You entered a number, but a text was expected (in quotes).',
+        10
+      );
+      testExpression(
+        'number|string',
+        '"World" + ToNumber("123")',
+        'You tried to use an expression that returns a number, but a string is expected. Use `ToString` if you need to convert a number to a string.',
+        10
+      );
+      testExpression(
+        'number|string',
+        '123 + ToString(456)',
+        'You tried to use an expression that returns a string, but a number is expected. Use `ToNumber` if you need to convert a string to a number.',
+        6
       );
     });
 
@@ -2999,7 +3068,7 @@ describe('libGD.js', function () {
   });
 
   describe('gd.PlatformExtension', function () {
-    it('can be created and have basic information filled', function () {
+    const makeTestExtension = () => {
       const extension = new gd.PlatformExtension();
       extension
         .setExtensionInformation(
@@ -3010,6 +3079,11 @@ describe('libGD.js', function () {
           'License of test extension'
         )
         .setExtensionHelpPath('/path/to/extension/help');
+      return extension;
+    };
+
+    it('can be created and have basic information filled', function () {
+      const extension = makeTestExtension();
 
       expect(extension.getName()).toBe('TestExtensionName');
       expect(extension.getFullName()).toBe('Full name of test extension');
@@ -3018,6 +3092,123 @@ describe('libGD.js', function () {
       expect(extension.getLicense()).toBe('License of test extension');
       expect(extension.getHelpPath()).toBe('/path/to/extension/help');
       extension.delete();
+    });
+
+    it('can have actions and conditions added', function () {
+      const extension = makeTestExtension();
+      extension
+        .addCondition(
+          'BannerShowing',
+          'Banner showing',
+          'Check if there is a banner being displayed.',
+          'Banner is showing',
+          'AdMob',
+          'JsPlatform/Extensions/admobicon24.png',
+          'JsPlatform/Extensions/admobicon16.png'
+        )
+        .getCodeExtraInformation()
+        .setIncludeFile('Extensions/AdMob/admobtools.js')
+        .setFunctionName('gdjs.adMob.isBannerShowing');
+
+      expect(
+        extension.getAllConditions().has('TestExtensionName::BannerShowing')
+      ).toBe(true);
+      const condition = extension
+        .getAllConditions()
+        .get('TestExtensionName::BannerShowing');
+      expect(condition.getFullName()).toBe('Banner showing');
+      expect(condition.isHidden()).toBe(false);
+
+      // Check also the API to duplicate a condition.
+      extension
+        .addDuplicatedCondition('AnotherCondition', 'BannerShowing')
+        .setHidden();
+
+      expect(
+        extension.getAllConditions().has('TestExtensionName::AnotherCondition')
+      ).toBe(true);
+      const copiedCondition = extension
+        .getAllConditions()
+        .get('TestExtensionName::AnotherCondition');
+      expect(copiedCondition.getFullName()).toBe('Banner showing');
+      expect(copiedCondition.isHidden()).toBe(true);
+      extension.delete();
+    });
+    it('can have expressions and conditions added at the same time', function () {
+      const extension = makeTestExtension();
+      extension
+        .addExpressionAndCondition(
+          'number',
+          'PlayerHealth',
+          'Health of the player',
+          'The health of the player, from 0 to 100.',
+          'the health of the player',
+          'Health Management',
+          'SomeHealthIcon.png'
+        )
+        .addCodeOnlyParameter('currentScene', '')
+        .addParameter('string', 'Some stuff', '', false)
+        .setParameterLongDescription('Blabla')
+        .setFunctionName('some.method.to.getPlayerHealth')
+        .useStandardParameters('number');
+
+      expect(
+        extension.getAllConditions().has('TestExtensionName::PlayerHealth')
+      ).toBe(true);
+      const declaredCondition = extension
+        .getAllConditions()
+        .get('TestExtensionName::PlayerHealth');
+      expect(declaredCondition.getParametersCount()).toBe(4);
+
+      expect(
+        extension.getAllExpressions().has('TestExtensionName::PlayerHealth')
+      ).toBe(true);
+      const declaredExpression = extension
+        .getAllExpressions()
+        .get('TestExtensionName::PlayerHealth');
+      expect(declaredExpression.getParametersCount()).toBe(2);
+    });
+    it('can have expressions, conditions and actions added at the same time', function () {
+      const extension = makeTestExtension();
+      extension
+        .addExpressionAndConditionAndAction(
+          'number',
+          'PlayerHealth',
+          'Health of the player',
+          'The health of the player, from 0 to 100.',
+          'the health of the player',
+          'Health Management',
+          'SomeHealthIcon.png'
+        )
+        .addCodeOnlyParameter('currentScene', '')
+        .addParameter('string', 'Some stuff', '', false)
+        .setParameterLongDescription('Blabla')
+        .setFunctionName('some.method.to.getPlayerHealth')
+        .useStandardParameters('number');
+
+      expect(
+        extension.getAllConditions().has('TestExtensionName::PlayerHealth')
+      ).toBe(true);
+      const declaredCondition = extension
+        .getAllConditions()
+        .get('TestExtensionName::PlayerHealth');
+      expect(declaredCondition.getParametersCount()).toBe(4);
+
+      expect(
+        extension.getAllActions().has('TestExtensionName::SetPlayerHealth')
+      ).toBe(true);
+      const declaredAction = extension
+        .getAllActions()
+        .get('TestExtensionName::SetPlayerHealth');
+      expect(declaredAction.getParametersCount()).toBe(4);
+
+      expect(
+        extension.getAllExpressions().has('TestExtensionName::PlayerHealth')
+      ).toBe(true);
+      const declaredExpression = extension
+        .getAllExpressions()
+        .get('TestExtensionName::PlayerHealth');
+      expect(declaredExpression.getParametersCount()).toBe(2);
     });
   });
 
@@ -3374,6 +3565,7 @@ describe('libGD.js', function () {
   describe('gd.ExpressionMetadata', () => {
     it('can have parameters', () => {
       const expressionMetadata = new gd.ExpressionMetadata(
+        'number',
         'extensionNamespace',
         'name',
         'fullname',
@@ -3382,6 +3574,7 @@ describe('libGD.js', function () {
         'smallicon'
       );
 
+      expect(expressionMetadata.getReturnType()).toBe('number');
       expect(expressionMetadata.getFullName()).toBe('fullname');
       expect(expressionMetadata.getDescription()).toBe('description');
       expect(expressionMetadata.getGroup()).toBe('group');

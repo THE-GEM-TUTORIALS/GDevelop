@@ -13,6 +13,7 @@ type IconProps =
   // Support a few specific icons from iconmoon-font.css
   | {|
       className:
+        | 'icon-youtube'
         | 'icon-twitter'
         | 'icon-facebook'
         | 'icon-discord'
@@ -23,7 +24,7 @@ type IconProps =
 // They should be self descriptive - refer to Material UI docs otherwise.
 type Props = {|
   ...IconProps,
-  onClick?: () => void,
+  onClick?: (ev: any) => void,
   onContextMenu?: () => void,
   disabled?: boolean,
 

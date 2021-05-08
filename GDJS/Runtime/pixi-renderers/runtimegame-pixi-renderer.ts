@@ -1,4 +1,18 @@
 namespace gdjs {
+  import PIXI = GlobalPIXIModule.PIXI;
+
+  /**
+   * Codes (as in `event.code`) of keys that should have their event `preventDefault`
+   * called. This is used to avoid scrolling in a webpage when these keys are pressed
+   * in the game.
+   */
+  const defaultPreventedKeys = [
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+  ];
+
   /**
    * The renderer for a gdjs.RuntimeGame using Pixi.js.
    */
@@ -50,7 +64,7 @@ namespace gdjs {
         height: this._game.getGameResolutionHeight(),
         preserveDrawingBuffer: true,
         antialias: false,
-      });
+      }) as PIXI.Renderer;
       parentElement.appendChild(
         // add the renderer view element to the DOM
         this._pixiRenderer.view
@@ -282,9 +296,9 @@ namespace gdjs {
           //TODO: Do this on a user gesture, otherwise most browsers won't activate fullscreen
           if (this._isFullscreen) {
             // @ts-ignore
-            if (document.documentElement.requestFullScreen) {
+            if (document.documentElement.requestFullscreen) {
               // @ts-ignore
-              document.documentElement.requestFullScreen();
+              document.documentElement.requestFullscreen();
             } else {
               // @ts-ignore
               if (document.documentElement.mozRequestFullScreen) {
@@ -300,9 +314,9 @@ namespace gdjs {
             }
           } else {
             // @ts-ignore
-            if (document.cancelFullScreen) {
+            if (document.exitFullscreen) {
               // @ts-ignore
-              document.cancelFullScreen();
+              document.exitFullscreen();
             } else {
               // @ts-ignore
               if (document.mozCancelFullScreen) {
@@ -408,9 +422,17 @@ namespace gdjs {
 
       //Keyboard
       document.onkeydown = function (e) {
+        if (defaultPreventedKeys.includes(e.keyCode)) {
+          e.preventDefault();
+        }
+
         manager.onKeyPressed(e.keyCode, e.location);
       };
       document.onkeyup = function (e) {
+        if (defaultPreventedKeys.includes(e.keyCode)) {
+          e.preventDefault();
+        }
+
         manager.onKeyReleased(e.keyCode, e.location);
       };
 
@@ -459,8 +481,8 @@ namespace gdjs {
         return false;
       };
       // @ts-ignore
-      renderer.view.onmousewheel = function (event) {
-        manager.onMouseWheel(event.wheelDelta);
+      renderer.view.onwheel = function (event) {
+        manager.onMouseWheel(-event.deltaY);
       };
 
       //Touches
@@ -604,5 +626,6 @@ namespace gdjs {
   }
 
   //Register the class to let the engine use it.
+  export type RuntimeGameRenderer = RuntimeGamePixiRenderer;
   export const RuntimeGameRenderer = RuntimeGamePixiRenderer;
 }

@@ -21,7 +21,7 @@ namespace gdjs {
     /** The name of the external layout to create in the scene at position 0;0. */
     injectExternalLayout?: string;
     /** Script files, used for hot-reloading. */
-    scriptFiles: Array<RuntimeGameOptionsScriptFile>;
+    scriptFiles?: Array<RuntimeGameOptionsScriptFile>;
     /** if true, export is a partial preview without events. */
     projectDataOnlyExport?: boolean;
     /** The address of the debugger server, to reach out using WebSocket. */
@@ -34,36 +34,37 @@ namespace gdjs {
    * Represents a game being played.
    */
   export class RuntimeGame {
-    _variables: any;
-    _data: any;
-    _imageManager: any;
-    _soundManager: any;
-    _fontManager: any;
-    _jsonManager: any;
-    _maxFPS: any;
-    _minFPS: any;
+    _variables: VariablesContainer;
+    _data: ProjectData;
+    _imageManager: ImageManager;
+    _soundManager: SoundManager;
+    _fontManager: FontManager;
+    _jsonManager: JsonManager;
+    _bitmapFontManager: BitmapFontManager;
+    _maxFPS: integer;
+    _minFPS: integer;
     _gameResolutionWidth: integer;
     _gameResolutionHeight: integer;
     _originalWidth: float;
     _originalHeight: float;
-    _resizeMode: any;
+    _resizeMode: 'adaptWidth' | 'adaptHeight' | string;
     _adaptGameResolutionAtRuntime: boolean;
-    _scaleMode: string;
-    _renderer: any;
+    _scaleMode: 'linear' | 'nearest';
+    _renderer: RuntimeGameRenderer;
 
     //Game loop management (see startGameLoop method)
-    _sceneStack: any;
+    _sceneStack: SceneStack;
     _notifyScenesForGameResolutionResize: boolean = false;
 
     // When set to true, the scenes are notified that gamre resolution size changed.
     _paused: boolean = false;
 
     //Inputs :
-    _inputManager: any;
+    _inputManager: InputManager;
 
     //Allow to specify an external layout to insert in the first scene:
     _injectExternalLayout: any;
-    _options: any;
+    _options: RuntimeGameOptions;
 
     /**
      * Optional client to connect to a debugger
@@ -89,6 +90,10 @@ namespace gdjs {
       );
       this._fontManager = new gdjs.FontManager(this._data.resources.resources);
       this._jsonManager = new gdjs.JsonManager(this._data.resources.resources);
+      this._bitmapFontManager = new gdjs.BitmapFontManager(
+        this._data.resources.resources,
+        this._imageManager
+      );
       this._maxFPS = this._data ? this._data.properties.maxFPS : 60;
       this._minFPS = this._data ? this._data.properties.minFPS : 15;
       this._gameResolutionWidth = this._data.properties.windowWidth;
@@ -122,6 +127,7 @@ namespace gdjs {
       this._soundManager.setResources(this._data.resources.resources);
       this._fontManager.setResources(this._data.resources.resources);
       this._jsonManager.setResources(this._data.resources.resources);
+      this._bitmapFontManager.setResources(this._data.resources.resources);
     }
 
     /**
@@ -132,7 +138,7 @@ namespace gdjs {
       return this._options;
     }
 
-    getRenderer() {
+    getRenderer(): gdjs.RuntimeGameRenderer {
       return this._renderer;
     }
 
@@ -149,7 +155,6 @@ namespace gdjs {
      * @return The sound manager.
      */
     getSoundManager(): gdjs.HowlerSoundManager {
-      // @ts-ignore
       return this._soundManager;
     }
 
@@ -158,7 +163,6 @@ namespace gdjs {
      * @return The image manager.
      */
     getImageManager(): gdjs.PixiImageManager {
-      // @ts-ignore
       return this._imageManager;
     }
 
@@ -167,8 +171,16 @@ namespace gdjs {
      * @return The font manager.
      */
     getFontManager(): gdjs.FontFaceObserverFontManager {
-      // @ts-ignore
       return this._fontManager;
+    }
+
+    /**
+     * Get the gdjs.BitmapFontManager of the RuntimeGame.
+     * @return The bitmap font manager.
+     */
+    getBitmapFontManager(): gdjs.BitmapFontManager {
+      // @ts-ignore
+      return this._bitmapFontManager;
     }
 
     /**
@@ -204,7 +216,7 @@ namespace gdjs {
      * @return The data associated to the scene.
      */
     getSceneData(sceneName?: string): LayoutData | null {
-      let scene = null;
+      let scene: LayoutData | null = null;
       for (let i = 0, len = this._data.layouts.length; i < len; ++i) {
         const sceneData = this._data.layouts[i];
         if (sceneName === undefined || sceneData.name === sceneName) {
@@ -243,7 +255,7 @@ namespace gdjs {
      * @return The data associated to the external layout or null if not found.
      */
     getExternalLayoutData(name: string): ExternalLayoutData | null {
-      let externalLayout = null;
+      let externalLayout: ExternalLayoutData | null = null;
       for (let i = 0, len = this._data.externalLayouts.length; i < len; ++i) {
         const layoutData = this._data.externalLayouts[i];
         if (layoutData.name === name) {
@@ -393,14 +405,14 @@ namespace gdjs {
      * Return the minimal fps that must be guaranteed by the game
      * (otherwise, game is slowed down).
      */
-    getMinimalFramerate() {
+    getMinimalFramerate(): integer {
       return this._minFPS;
     }
 
     /**
      * Return the scale mode of the game ("linear" or "nearest").
      */
-    getScaleMode() {
+    getScaleMode(): 'linear' | 'nearest' {
       return this._scaleMode;
     }
 
@@ -423,6 +435,10 @@ namespace gdjs {
       );
       const allAssetsTotal = this._data.resources.resources.length;
       const that = this;
+
+      // TODO: All the `loadXXX` (or `preloadXXX`) methods would be
+      // better converted to return promises, for better readability of the code.
+      // See how `loadBitmapFontData` is done.
       this._imageManager.loadTextures(
         function (count, total) {
           const percent = Math.floor((count / allAssetsTotal) * 100);
@@ -471,9 +487,25 @@ namespace gdjs {
                         progressCallback(percent);
                       }
                     },
-                    function () {
-                      loadingScreen.unload();
-                      callback();
+                    function (jsonTotalCount) {
+                      that._bitmapFontManager
+                        .loadBitmapFontData((count) => {
+                          var percent = Math.floor(
+                            ((texturesTotalCount +
+                              audioTotalCount +
+                              fontTotalCount +
+                              jsonTotalCount +
+                              count) /
+                              allAssetsTotal) *
+                              100
+                          );
+                          loadingScreen.render(percent);
+                          if (progressCallback) progressCallback(percent);
+                        })
+                        .then(() => {
+                          loadingScreen.unload();
+                          callback();
+                        });
                     }
                   );
                 }
@@ -717,7 +749,9 @@ namespace gdjs {
      * Start a profiler for the currently running scene.
      * @param onProfilerStopped Function to be called when the profiler is stopped. Will be passed the profiler as argument.
      */
-    startCurrentSceneProfiler(onProfilerStopped: Function) {
+    startCurrentSceneProfiler(
+      onProfilerStopped: (oldProfiler: Profiler) => void
+    ) {
       const currentScene = this._sceneStack.getCurrentScene();
       if (!currentScene) {
         return false;
@@ -740,7 +774,7 @@ namespace gdjs {
     /**
      * Return true if a scene was loaded, false otherwise (i.e: game not yet started).
      */
-    wasFirstSceneLoaded() {
+    wasFirstSceneLoaded(): boolean {
       return this._sceneStack.wasFirstSceneLoaded();
     }
 

@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "default",
     "packageName": "",
-    "projectUuid": "d6437651-bf85-4831-b7c0-5c8550a55bd2",
+    "projectUuid": "49af45a6-8dc7-4f4e-bce8-5fe696257fd1",
     "scaleMode": "linear",
     "sizeOnStartupMode": "",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -183,6 +183,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -192,122 +193,151 @@
       "variables": [
         {
           "name": "Shapes",
+          "type": "structure",
           "children": [
             {
               "name": "0",
+              "type": "structure",
               "children": [
                 {
                   "name": "Border",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "BorderColor",
+                  "type": "structure",
                   "children": [
                     {
                       "name": "B",
+                      "type": "string",
                       "value": "0"
                     },
                     {
                       "name": "G",
+                      "type": "string",
                       "value": "0"
                     },
                     {
                       "name": "R",
+                      "type": "string",
                       "value": "0"
                     }
                   ]
                 },
                 {
                   "name": "BorderOpacity",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "EndX",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "EndY",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "FillColor",
+                  "type": "structure",
                   "children": [
                     {
                       "name": "B",
+                      "type": "string",
                       "value": "0"
                     },
                     {
                       "name": "G",
+                      "type": "string",
                       "value": "0"
                     },
                     {
                       "name": "R",
+                      "type": "string",
                       "value": "0"
                     }
                   ]
                 },
                 {
                   "name": "FillOpacity",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "Radius",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "StartX",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "StartY",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "Thickness",
+                  "type": "string",
                   "value": "0"
                 },
                 {
                   "name": "Type",
+                  "type": "string",
                   "value": "0"
                 }
               ]
             },
             {
               "name": "Size",
+              "type": "string",
               "value": "-1"
             }
           ]
         },
         {
           "name": "i",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "else",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "shape",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "drawing",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "R",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "G",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "B",
+          "type": "string",
           "value": "0"
         },
         {
           "name": "A",
+          "type": "string",
           "value": "100"
         }
       ],
@@ -319,7 +349,7 @@
           "layer": "",
           "locked": false,
           "name": "Drawer",
-          "persistentUuid": "f0dc8365-f103-4423-bba4-7a5acd740cdc",
+          "persistentUuid": "1fb23849-d60e-4e8f-96e1-7e2e20d988c0",
           "width": 0,
           "x": 283,
           "y": 96,
@@ -329,6 +359,7 @@
           "initialVariables": [
             {
               "name": "ID",
+              "type": "string",
               "value": "-1"
             }
           ]
@@ -340,7 +371,7 @@
           "layer": "",
           "locked": false,
           "name": "BarSelect",
-          "persistentUuid": "feec3f6a-3868-41da-974b-a50c33c563ec",
+          "persistentUuid": "c3144d13-d5d7-41dd-908a-3b1eecd1bd14",
           "width": 0,
           "x": 150,
           "y": 495,
@@ -350,6 +381,7 @@
           "initialVariables": [
             {
               "name": "ID",
+              "type": "string",
               "value": "3"
             }
           ]
@@ -361,7 +393,7 @@
           "layer": "",
           "locked": false,
           "name": "BarSelect",
-          "persistentUuid": "40735708-babc-4921-a94a-b7fbd4176b98",
+          "persistentUuid": "0bf1ca5d-2b6d-4d00-8128-29338d3a89fa",
           "width": 0,
           "x": 50,
           "y": 405,
@@ -371,6 +403,7 @@
           "initialVariables": [
             {
               "name": "ID",
+              "type": "string",
               "value": "0"
             }
           ]
@@ -382,7 +415,7 @@
           "layer": "",
           "locked": false,
           "name": "BarSelect",
-          "persistentUuid": "4800caf1-876b-4654-b140-01fe67cf383c",
+          "persistentUuid": "6389becb-a502-4967-baa5-68b9d0c353ba",
           "width": 0,
           "x": 50,
           "y": 435,
@@ -392,6 +425,7 @@
           "initialVariables": [
             {
               "name": "ID",
+              "type": "string",
               "value": "1"
             }
           ]
@@ -403,7 +437,7 @@
           "layer": "",
           "locked": false,
           "name": "BarSelect",
-          "persistentUuid": "bcf77b07-ab01-4478-8bf1-b245cb432e8e",
+          "persistentUuid": "82ad3623-fdf2-4962-9e2d-604484a3ea35",
           "width": 0,
           "x": 50,
           "y": 465,
@@ -413,6 +447,7 @@
           "initialVariables": [
             {
               "name": "ID",
+              "type": "string",
               "value": "2"
             }
           ]
@@ -424,7 +459,7 @@
           "layer": "",
           "locked": false,
           "name": "message",
-          "persistentUuid": "379b4b28-ade6-45e9-9bef-ecca8af77e83",
+          "persistentUuid": "a0ad8fec-cdc3-4398-af1a-02a5282931e0",
           "width": 0,
           "x": 18,
           "y": 523,
@@ -442,22 +477,27 @@
           "variables": [
             {
               "name": "StartX",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "StartY",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "EndX",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "EndY",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "ID",
+              "type": "string",
               "value": "0"
             }
           ],
@@ -688,10 +728,12 @@
           "variables": [
             {
               "name": "Drag",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "Value",
+              "type": "string",
               "value": "0"
             }
           ],

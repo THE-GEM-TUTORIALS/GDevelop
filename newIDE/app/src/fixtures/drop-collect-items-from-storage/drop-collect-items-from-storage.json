@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "landscape",
     "packageName": "com.example.gamename",
-    "projectUuid": "7177c4bd-2a29-4fcd-888e-fc17ec929d48",
+    "projectUuid": "0d029c63-c07f-4d6c-9992-848b2da1fce4",
     "scaleMode": "linear",
     "sizeOnStartupMode": "adaptWidth",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -252,6 +252,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": false,
@@ -282,7 +283,7 @@
           "layer": "",
           "locked": false,
           "name": "Barrel",
-          "persistentUuid": "fd5a959a-ee75-493a-b192-b4f1b9be4b25",
+          "persistentUuid": "4fda1dde-407c-43ce-b7b3-e0f6ad32ad76",
           "width": 0,
           "x": 56,
           "y": 334,
@@ -292,18 +293,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Random"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -315,7 +320,7 @@
           "layer": "",
           "locked": false,
           "name": "XButton",
-          "persistentUuid": "3e602ffd-a520-4497-b37d-ffa474824898",
+          "persistentUuid": "330dd17b-784f-4868-b9ed-a4b24e05d8d8",
           "width": 0,
           "x": 456,
           "y": 443,
@@ -331,7 +336,7 @@
           "layer": "",
           "locked": false,
           "name": "message",
-          "persistentUuid": "4065fed3-b535-4fe0-9ba2-3837d5bc9caf",
+          "persistentUuid": "59cadd7b-cd8f-4dd8-b438-8eb4b9f9f5c4",
           "width": 0,
           "x": 4,
           "y": 559,
@@ -347,7 +352,7 @@
           "layer": "",
           "locked": false,
           "name": "Barrel",
-          "persistentUuid": "92bbf408-5a24-495c-8cb8-e5f9d08bd541",
+          "persistentUuid": "5f14750c-95df-47b5-815c-6095450c52c9",
           "width": 0,
           "x": 56,
           "y": 256,
@@ -357,18 +362,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Gun"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -380,7 +389,7 @@
           "layer": "",
           "locked": false,
           "name": "Barrel",
-          "persistentUuid": "ac2e2994-5bb1-4a5f-aa0c-473ef44069b7",
+          "persistentUuid": "815b9cb2-9f51-4c01-beac-67382c806718",
           "width": 0,
           "x": 55,
           "y": 183,
@@ -390,18 +399,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Gun"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "yes"
             }
           ]
@@ -413,7 +426,7 @@
           "layer": "",
           "locked": false,
           "name": "Barrel",
-          "persistentUuid": "cf0d0921-a91c-429e-8650-98fb224a12cc",
+          "persistentUuid": "fd958adf-7117-40b1-b522-e25ae7297cba",
           "width": 0,
           "x": 57,
           "y": 418,
@@ -423,18 +436,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Sword"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -446,7 +463,7 @@
           "layer": "",
           "locked": false,
           "name": "Box",
-          "persistentUuid": "d6898455-c0b5-490e-8339-3c7e629b5a95",
+          "persistentUuid": "a7cf02e4-192c-4954-b088-ac61bdd577d2",
           "width": 0,
           "x": 446,
           "y": 364,
@@ -456,18 +473,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "gold"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "10"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "yes"
             }
           ]
@@ -479,7 +500,7 @@
           "layer": "",
           "locked": false,
           "name": "Box",
-          "persistentUuid": "c14f0c53-e6c7-4a89-84a0-e4623f65bb7c",
+          "persistentUuid": "a2bb42b7-841e-4372-b32a-7c27b19d7319",
           "width": 0,
           "x": 446,
           "y": 295,
@@ -489,18 +510,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Umbrella"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -512,7 +537,7 @@
           "layer": "",
           "locked": false,
           "name": "Box",
-          "persistentUuid": "d307e383-7b48-46e4-9f50-7458975ee97c",
+          "persistentUuid": "d7405ed6-19d8-422b-94c9-e46d6a6ac355",
           "width": 0,
           "x": 446,
           "y": 226,
@@ -522,18 +547,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Random"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -545,7 +574,7 @@
           "layer": "",
           "locked": false,
           "name": "Jug",
-          "persistentUuid": "10e76dcb-4eae-4537-81f2-3ea1e8165458",
+          "persistentUuid": "a229d062-1b2c-478d-8c5e-8003c4bcfda4",
           "width": 0,
           "x": 230,
           "y": 225,
@@ -555,18 +584,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Gold"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -578,7 +611,7 @@
           "layer": "",
           "locked": false,
           "name": "Jug",
-          "persistentUuid": "36685575-5d91-4c58-a919-c602f4a505d4",
+          "persistentUuid": "ac42a708-83b9-4be1-ac5a-eb7516d2b95f",
           "width": 0,
           "x": 231,
           "y": 305,
@@ -588,18 +621,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Gold"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "200"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -611,7 +648,7 @@
           "layer": "",
           "locked": false,
           "name": "Jug",
-          "persistentUuid": "5c2452ae-2779-427c-aece-55bcb58f5686",
+          "persistentUuid": "4f462466-c571-4717-9300-63f5b651045c",
           "width": 0,
           "x": 229,
           "y": 378,
@@ -621,18 +658,22 @@
           "initialVariables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "Gold"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "0"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ]
@@ -644,7 +685,7 @@
           "layer": "",
           "locked": false,
           "name": "ExampleDescription",
-          "persistentUuid": "ee0a055c-9bd8-4992-9bf2-5d25cc9b0f95",
+          "persistentUuid": "bf82aab3-9e1b-46fa-81f8-213b16f82b92",
           "width": 0,
           "x": 17,
           "y": 15,
@@ -663,18 +704,22 @@
           "variables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "random"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ],
@@ -777,18 +822,22 @@
           "variables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "random"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ],
@@ -891,18 +940,22 @@
           "variables": [
             {
               "name": "durability",
+              "type": "string",
               "value": "100"
             },
             {
               "name": "drop",
+              "type": "string",
               "value": "random"
             },
             {
               "name": "dropQuantity",
+              "type": "string",
               "value": "1"
             },
             {
               "name": "locked",
+              "type": "string",
               "value": "no"
             }
           ],

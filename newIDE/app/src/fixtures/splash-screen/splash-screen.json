@@ -11,7 +11,7 @@
     "folderProject": false,
     "orientation": "default",
     "packageName": "",
-    "projectUuid": "50d3f4ea-5ebc-4f2f-b3cd-4e2bb3f14318",
+    "projectUuid": "389f6a3d-20cd-43df-9c72-57128e0a3c55",
     "scaleMode": "linear",
     "sizeOnStartupMode": "",
     "useDeprecatedZeroAsDefaultZOrder": true,
@@ -135,6 +135,7 @@
         "gridOffsetX": 0,
         "gridOffsetY": 0,
         "gridR": 158,
+        "gridType": "rectangular",
         "gridWidth": 32,
         "snap": true,
         "windowMask": true,
@@ -144,6 +145,7 @@
       "variables": [
         {
           "name": "SceneAfterSplash",
+          "type": "string",
           "value": ""
         }
       ],
@@ -155,7 +157,7 @@
           "layer": "",
           "locked": false,
           "name": "logo",
-          "persistentUuid": "77724089-fd67-4d1c-87b1-6bf899c384b1",
+          "persistentUuid": "da93d3ee-58e5-4902-9623-aa5737759ecc",
           "width": 0,
           "x": 383.5,
           "y": 270,

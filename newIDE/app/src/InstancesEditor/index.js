@@ -156,11 +156,11 @@ export default class InstancesEditor extends Component<Props> {
       return false;
     });
 
-    this.pixiRenderer.view.onmousewheel = event => {
+    this.pixiRenderer.view.onwheel = event => {
       if (this.keyboardShortcuts.shouldZoom()) {
-        this.zoomBy(event.wheelDelta / 5000);
+        this.zoomOnCursorBy(-event.deltaY / 5000);
       } else if (this.keyboardShortcuts.shouldScrollHorizontally()) {
-        this.viewPosition.scrollBy(-event.wheelDelta / 10, 0);
+        this.viewPosition.scrollBy(-event.deltaY / 10, 0);
       } else {
         this.viewPosition.scrollBy(event.deltaX / 10, event.deltaY / 10);
       }
@@ -389,6 +389,7 @@ export default class InstancesEditor extends Component<Props> {
     this.longTouchHandler.unmount();
     if (this.nextFrame) cancelAnimationFrame(this.nextFrame);
     stopPIXITicker();
+    this.pixiRenderer.destroy();
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -448,13 +449,30 @@ export default class InstancesEditor extends Component<Props> {
    * See also ResourcesLoader and PixiResourcesLoader.
    * @param {string} objectName The name of the object for which instance must be re-rendered.
    */
-  resetRenderersFor(objectName: string) {
+  resetInstanceRenderersFor(objectName: string) {
     if (this.instancesRenderer)
-      this.instancesRenderer.resetRenderersFor(objectName);
+      this.instancesRenderer.resetInstanceRenderersFor(objectName);
   }
 
   zoomBy(value: number) {
     this.setZoomFactor(this.getZoomFactor() + value);
+  }
+
+  /**
+   * Zoom and scroll so that the cursor stays on the same position scene-wise.
+   */
+  zoomOnCursorBy(value: number) {
+    const beforeZoomCursorPosition = this.getLastCursorSceneCoordinates();
+    this.setZoomFactor(this.getZoomFactor() + value);
+    const afterZoomCursorPosition = this.getLastCursorSceneCoordinates();
+    // Compensate for the cursor change in position
+    this.viewPosition.scrollBy(
+      beforeZoomCursorPosition[0] - afterZoomCursorPosition[0],
+      beforeZoomCursorPosition[1] - afterZoomCursorPosition[1]
+    );
+    if (this.props.onViewPositionChanged) {
+      this.props.onViewPositionChanged(this.viewPosition);
+    }
   }
 
   getZoomFactor = () => {

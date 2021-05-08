@@ -5,10 +5,11 @@
 namespace gdjs {
   /** Initial properties for a Tiled Sprite object */
   export type TiledSpriteObjectDataType = {
-    /** The width of the object */
+    /** Default width of the object, if the instance has no custom width. */
     width: number;
-    /** The height of the object */
+    /** Default height of the object, if the instance has no custom height. */
     height: number;
+    texture: string;
   };
 
   export type TiledSpriteObjectData = ObjectData & TiledSpriteObjectDataType;
@@ -20,6 +21,12 @@ namespace gdjs {
     _xOffset: float = 0;
     _yOffset: float = 0;
     opacity: float = 255;
+
+    // Width and height can be stored because they do not depend on the
+    // size of the texture being used (contrary to most objects).
+    _width: float;
+    _height: float;
+
     _renderer: gdjs.TiledSpriteRuntimeObjectRenderer;
 
     /**
@@ -34,8 +41,10 @@ namespace gdjs {
       this._renderer = new gdjs.TiledSpriteRuntimeObjectRenderer(
         this,
         runtimeScene,
-        (tiledSpriteObjectData as any).texture
+        tiledSpriteObjectData.texture
       );
+      this._width = 0;
+      this._height = 0;
       this.setWidth(tiledSpriteObjectData.width);
       this.setHeight(tiledSpriteObjectData.height);
 
@@ -118,7 +127,7 @@ namespace gdjs {
      * @returns The width of the Tiled Sprite object
      */
     getWidth(): float {
-      return this._renderer.getWidth();
+      return this._width;
     }
 
     /**
@@ -126,7 +135,7 @@ namespace gdjs {
      * @returns The height of the Tiled Sprite object
      */
     getHeight(): float {
-      return this._renderer.getHeight();
+      return this._height;
     }
 
     /**
@@ -134,7 +143,11 @@ namespace gdjs {
      * @param width The new width.
      */
     setWidth(width: float): void {
+      if (this._width === width) return;
+
+      this._width = width;
       this._renderer.setWidth(width);
+      this.hitBoxesDirty = true;
     }
 
     /**
@@ -142,7 +155,11 @@ namespace gdjs {
      * @param height The new height.
      */
     setHeight(height: float): void {
+      if (this._height === height) return;
+
+      this._height = height;
       this._renderer.setHeight(height);
+      this.hitBoxesDirty = true;
     }
 
     /**
@@ -218,6 +235,54 @@ namespace gdjs {
      */
     getColor(): string {
       return this._renderer.getColor();
+    }
+
+    // Implement support for get/set scale:
+
+    /**
+     * Get scale of the tiled sprite object.
+     */
+    getScale(): float {
+      return (this.getScaleX() + this.getScaleY()) / 2.0;
+    }
+
+    /**
+     * Get x-scale of the tiled sprite object.
+     */
+    getScaleX(): float {
+      return this._width / this._renderer.getTextureWidth();
+    }
+
+    /**
+     * Get y-scale of the tiled sprite object.
+     */
+    getScaleY(): float {
+      return this._height / this._renderer.getTextureHeight();
+    }
+
+    /**
+     * Set the tiled sprite object scale.
+     * @param newScale The new scale for the tiled sprite object.
+     */
+    setScale(newScale: float): void {
+      this.setWidth(this._renderer.getTextureWidth() * newScale);
+      this.setHeight(this._renderer.getTextureHeight() * newScale);
+    }
+
+    /**
+     * Set the tiled sprite object x-scale.
+     * @param newScale The new x-scale for the tiled sprite object.
+     */
+    setScaleX(newScale: float): void {
+      this.setWidth(this._renderer.getTextureWidth() * newScale);
+    }
+
+    /**
+     * Set the tiled sprite object y-scale.
+     * @param newScale The new y-scale for the tiled sprite object.
+     */
+    setScaleY(newScale: float): void {
+      this.setHeight(this._renderer.getTextureHeight() * newScale);
     }
   }
   gdjs.registerObject(

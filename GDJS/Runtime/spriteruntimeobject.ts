@@ -437,7 +437,7 @@ namespace gdjs {
     /**
      * Update the current frame of the object according to the elapsed time on the scene.
      */
-    update(runtimeScene): void {
+    update(runtimeScene: gdjs.RuntimeScene): void {
       //Playing the animation of all objects including the ones outside the screen can be
       //costly when the scene is big with a lot of animated objects. By default, we skip
       //updating the object if it is not visible.
@@ -499,6 +499,17 @@ namespace gdjs {
     }
 
     /**
+     * Ensure the sprite is ready to be displayed: the proper animation frame
+     * is set and the renderer is up to date (position, angle, alpha, flip, blend mode...).
+     */
+    updatePreRender(runtimeScene: gdjs.RuntimeScene): void {
+      if (this._animationFrameDirty) {
+        this._updateAnimationFrame();
+      }
+      this._renderer.ensureUpToDate();
+    }
+
+    /**
      * Update `this._animationFrame` according to the current animation/direction/frame values
      * (`this._currentAnimation`, `this._currentDirection`, `this._currentFrame`) and set
      * `this._animationFrameDirty` back to false.
@@ -543,11 +554,11 @@ namespace gdjs {
       if (this._animationFrameDirty) {
         this._updateAnimationFrame();
       }
+      //Beware, `this._animationFrame` can still be null.
       if (this._animationFrame === null) {
         return;
       }
 
-      //Beware, `this._animationFrame` can still be null.
       if (!this._animationFrame.hasCustomHitBoxes) {
         return super.updateHitBoxes();
       }
@@ -801,6 +812,23 @@ namespace gdjs {
       const pos = gdjs.staticArray(SpriteRuntimeObject.prototype.getPointY);
       this._transformToGlobal(pt.x, pt.y, pos);
       return pos[1];
+    }
+    /**
+     * Get the positions on X and Y axis on the scene of the given point.
+     * @param name The point name
+     * @return An array of the position on X and Y axis on the scene of the given point.
+     */
+    getPointPosition(name: string): [x: float, y: float] {
+      if (this._animationFrameDirty) {
+        this._updateAnimationFrame();
+      }
+      if (name.length === 0 || this._animationFrame === null) {
+        return [this.getX(), this.getY()];
+      }
+      const pt = this._animationFrame.getPoint(name);
+      const pos = gdjs.staticArray(SpriteRuntimeObject.prototype.getPointX);
+      this._transformToGlobal(pt.x, pt.y, pos);
+      return [pos[0], pos[1]];
     }
 
     /**

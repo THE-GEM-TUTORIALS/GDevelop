@@ -28,10 +28,11 @@ import { CorsAwareImage } from '../UI/CorsAwareImage';
 import { AssetStoreContext } from './AssetStoreContext';
 import Link from '@material-ui/core/Link';
 import Window from '../Utils/Window';
+import CheckeredBackground from '../ResourcesList/CheckeredBackground';
 
 const styles = {
   previewBackground: {
-    background: 'url("res/transparentback.png") repeat',
+    position: 'relative',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,10 +48,8 @@ const styles = {
     marginBottom: 2,
     marginRight: 2,
   },
-  inlineText: {
-    display: 'inline-block',
-  },
   previewImage: {
+    position: 'relative',
     maxWidth: '100%',
     maxHeight: '100%',
     verticalAlign: 'middle',
@@ -158,6 +157,7 @@ export const AssetDetails = ({
                     : styles.verticalPreviewBackground),
                 }}
               >
+                <CheckeredBackground />
                 <CorsAwareImage
                   style={styles.previewImage}
                   src={assetShortHeader.previewImageUrls[0]}
@@ -168,13 +168,13 @@ export const AssetDetails = ({
           </ResponsiveWindowMeasurer>
           <Column expand>
             <div>
-              <Text size="title" style={styles.inlineText}>
+              <Text size="title" displayInlineAsSpan>
                 {assetShortHeader.name}
               </Text>{' '}
               {assetShortHeader.shortDescription && (
                 <React.Fragment>
                   -{' '}
-                  <Text size="body" style={styles.inlineText}>
+                  <Text size="body" displayInlineAsSpan>
                     {assetShortHeader.shortDescription}
                   </Text>
                 </React.Fragment>

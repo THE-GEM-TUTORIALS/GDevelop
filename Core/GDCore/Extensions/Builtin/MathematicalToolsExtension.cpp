@@ -22,6 +22,16 @@ BuiltinExtensionsImplementer::ImplementsMathematicalToolsExtension(
 #if defined(GD_IDE_ONLY)
 
   extension
+      .AddExpression("normalize",
+                     _("Normalize a value between `min` and `max` to a value between 0 and 1."),
+                     _("Remap a value between 0 and 1."),
+                     _("Mathematical tools"),
+                     "res/mathfunction.png")
+      .AddParameter("expression", _("Value"))
+      .AddParameter("expression", _("Min"))
+      .AddParameter("expression", _("Max"));
+
+  extension
       .AddExpression("clamp",
                      _("Clamp (restrict a value to a given range)"),
                      _("Restrict a value to a given range"),
@@ -368,6 +378,30 @@ BuiltinExtensionsImplementer::ImplementsMathematicalToolsExtension(
       .AddParameter("expression", _("a (in a+(b-a)*x)"))
       .AddParameter("expression", _("b (in a+(b-a)*x)"))
       .AddParameter("expression", _("x (in a+(b-a)*x)"));
+
+  extension
+      .AddExpression("XFromAngleAndDistance",
+                     _("X position from angle and distance"),
+                     _("Compute the X position when given an angle and distance "
+                      "relative to the origin (0;0). This is also known as "
+                      "getting the cartesian coordinates of a 2D vector, using "
+                      "its polar coordinates."),
+                     _("Mathematical tools"),
+                     "res/mathfunction.png")
+      .AddParameter("expression", _("Angle, in degrees"))
+      .AddParameter("expression", _("Distance"));
+
+  extension
+      .AddExpression("YFromAngleAndDistance",
+                     _("Y position from angle and distance"),
+                     _("Compute the Y position when given an angle and distance "
+                      "relative to the origin (0;0). This is also known as "
+                      "getting the cartesian coordinates of a 2D vector, using "
+                      "its polar coordinates."),
+                     _("Mathematical tools"),
+                     "res/mathfunction.png")
+      .AddParameter("expression", _("Angle, in degrees"))
+      .AddParameter("expression", _("Distance"));
 
 #endif
 }

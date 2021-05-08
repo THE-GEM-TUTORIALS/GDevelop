@@ -150,7 +150,10 @@ namespace gdjs {
      * @param width The new width in pixels.
      */
     setWidth(width: float): void {
+      if (this._renderer.getWidth() === width) return;
+
       this._renderer.setWidth(width);
+      this.hitBoxesDirty = true;
     }
 
     /**
@@ -158,7 +161,10 @@ namespace gdjs {
      * @param height The new height in pixels.
      */
     setHeight(height: float): void {
+      if (this._renderer.getHeight() === height) return;
+
       this._renderer.setHeight(height);
+      this.hitBoxesDirty = true;
     }
 
     /**
@@ -216,23 +222,16 @@ namespace gdjs {
     }
 
     /**
-     * Normalize a value between `min` and `max` to a value between 0 and 1.
-     * @param val The value to normalize
-     * @param max The maximum
-     * @param min The minimum
-     * @returns The normalized value
-     */
-    _normalize(val: number, min: number, max: float): number {
-      return (val - min) / (max - min);
-    }
-
-    /**
      * Set the volume of the video object.
      * @param volume The new volume, between 0 and 100.
      */
     setVolume(volume: number): void {
       this._volume =
-        gdjs.evtTools.common.clamp(this._normalize(volume, 0, 100), 0, 1) * 100;
+        gdjs.evtTools.common.clamp(
+          gdjs.evtTools.common.normalize(volume, 0, 100),
+          0,
+          1
+        ) * 100;
       this._renderer.updateVolume();
     }
 
@@ -241,7 +240,9 @@ namespace gdjs {
      * @returns The current video's volume, betwenn 0 and 100.
      */
     getVolume(): number {
-      return this._normalize(this._renderer.getVolume(), 0, 1) * 100;
+      return (
+        gdjs.evtTools.common.normalize(this._renderer.getVolume(), 0, 1) * 100
+      );
     }
 
     /**

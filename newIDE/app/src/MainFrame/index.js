@@ -116,6 +116,7 @@ import HotReloadLogsDialog from '../HotReload/HotReloadLogsDialog';
 import { useDiscordRichPresence } from '../Utils/UpdateDiscordRichPresence';
 import { useResourceFetcher } from '../ProjectsStorage/ResourceFetcher';
 import { delay } from '../Utils/Delay';
+import { type ExtensionShortHeader } from '../Utils/GDevelopServices/Extension';
 
 const GD_STARTUP_TIMES = global.GD_STARTUP_TIMES || [];
 
@@ -293,6 +294,9 @@ const MainFrame = (props: Props) => {
     EventsFunctionsExtensionsContext
   );
   const unsavedChanges = React.useContext(UnsavedChangesContext);
+  const [createDialogInitialTab, setCreateDialogInitialTab] = React.useState<
+    'starters' | 'tutorials' | 'games-showcase'
+  >('starters');
 
   // This is just for testing, to check if we're getting the right state
   // and gives us an idea about the number of re-renders.
@@ -811,6 +815,32 @@ const MainFrame = (props: Props) => {
     _onProjectItemModified();
   };
 
+  const onInstallExtension = (extensionShortHeader: ExtensionShortHeader) => {
+    const { currentProject } = state;
+    if (!currentProject) return;
+
+    // Close the extension tab before updating/reinstalling the extension.
+    const eventsFunctionsExtensionName = extensionShortHeader.name;
+
+    if (
+      currentProject.hasEventsFunctionsExtensionNamed(
+        eventsFunctionsExtensionName
+      )
+    ) {
+      const eventsFunctionsExtension = currentProject.getEventsFunctionsExtension(
+        eventsFunctionsExtensionName
+      );
+
+      setState(state => ({
+        ...state,
+        editorTabs: closeEventsFunctionsExtensionTabs(
+          state.editorTabs,
+          eventsFunctionsExtension
+        ),
+      }));
+    }
+  };
+
   const deleteLayout = (layout: gdLayout) => {
     const { i18n } = props;
     if (!state.currentProject) return;
@@ -1108,27 +1138,29 @@ const MainFrame = (props: Props) => {
   };
 
   const autosaveProjectIfNeeded = React.useCallback(
-    () => {
+    async () => {
       if (!currentProject) return;
 
-      getStorageProviderOperations().then(storageProviderOperations => {
-        if (
-          preferences.values.autosaveOnPreview &&
-          storageProviderOperations.onAutoSaveProject &&
-          currentFileMetadata
-        ) {
-          storageProviderOperations
-            .onAutoSaveProject(currentProject, currentFileMetadata)
-            .catch(err => {
-              console.error('Error while auto-saving the project: ', err);
-              _showSnackMessage(
-                i18n._(
-                  t`There was an error while making an auto-save of the project. Verify that you have permissions to write in the project folder.`
-                )
-              );
-            });
+      const storageProviderOperations = await getStorageProviderOperations();
+      if (
+        preferences.values.autosaveOnPreview &&
+        storageProviderOperations.onAutoSaveProject &&
+        currentFileMetadata
+      ) {
+        try {
+          await storageProviderOperations.onAutoSaveProject(
+            currentProject,
+            currentFileMetadata
+          );
+        } catch (err) {
+          console.error('Error while auto-saving the project: ', err);
+          _showSnackMessage(
+            i18n._(
+              t`There was an error while making an auto-save of the project. Verify that you have permissions to write in the project folder.`
+            )
+          );
         }
-      });
+      }
     },
     [
       i18n,
@@ -1460,6 +1492,23 @@ const MainFrame = (props: Props) => {
 
   const openCreateDialog = React.useCallback(
     (open: boolean = true) => {
+      setCreateDialogInitialTab('starters');
+      setState(state => ({ ...state, createDialogOpen: open }));
+    },
+    [setState]
+  );
+
+  const onOpenTutorials = React.useCallback(
+    (open: boolean = true) => {
+      setCreateDialogInitialTab('tutorials');
+      setState(state => ({ ...state, createDialogOpen: open }));
+    },
+    [setState]
+  );
+
+  const onOpenGamesShowcase = React.useCallback(
+    (open: boolean = true) => {
+      setCreateDialogInitialTab('games-showcase');
       setState(state => ({ ...state, createDialogOpen: open }));
     },
     [setState]
@@ -1711,50 +1760,54 @@ const MainFrame = (props: Props) => {
   );
 
   const saveProject = React.useCallback(
-    () => {
+    async () => {
       if (!currentProject) return;
       if (!currentFileMetadata) {
         return saveProjectAs();
       }
 
-      getStorageProviderOperations().then(storageProviderOperations => {
-        const { onSaveProject } = storageProviderOperations;
-        if (!onSaveProject) {
-          return saveProjectAs();
+      const storageProviderOperations = await getStorageProviderOperations();
+      const { onSaveProject } = storageProviderOperations;
+      if (!onSaveProject) {
+        return saveProjectAs();
+      }
+
+      saveUiSettings(state.editorTabs);
+      _showSnackMessage(i18n._(t`Saving...`));
+
+      // Protect against concurrent saves, which can trigger issues with the
+      // file system.
+      if (isSavingProject) {
+        console.info('Project is already being saved, not triggering save.');
+        return;
+      }
+      setIsSavingProject(true);
+
+      try {
+        const saveStartTime = performance.now();
+        const { wasSaved } = await onSaveProject(
+          currentProject,
+          currentFileMetadata
+        );
+
+        if (wasSaved) {
+          console.info(
+            `Project saved in ${performance.now() - saveStartTime}ms.`
+          );
+          if (unsavedChanges) unsavedChanges.sealUnsavedChanges();
+          _showSnackMessage(i18n._(t`Project properly saved`));
         }
+      } catch (rawError) {
+        showErrorBox({
+          message: i18n._(
+            t`Unable to save as the project! Please try again by choosing another location.`
+          ),
+          rawError,
+          errorId: 'project-save-error',
+        });
+      }
 
-        saveUiSettings(state.editorTabs);
-        _showSnackMessage(i18n._(t`Saving...`));
-
-        // Protect against concurrent saves, which can trigger issues with the
-        // file system.
-        if (isSavingProject) {
-          console.info('Project is already being saved, not triggering save.');
-          return;
-        }
-        setIsSavingProject(true);
-
-        onSaveProject(currentProject, currentFileMetadata)
-          .then(
-            ({ wasSaved }) => {
-              if (wasSaved) {
-                if (unsavedChanges) unsavedChanges.sealUnsavedChanges();
-                _showSnackMessage(i18n._(t`Project properly saved`));
-              }
-            },
-            rawError => {
-              showErrorBox({
-                message: i18n._(
-                  t`Unable to save as the project! Please try again by choosing another location.`
-                ),
-                rawError,
-                errorId: 'project-save-error',
-              });
-            }
-          )
-          .catch(() => {})
-          .then(() => setIsSavingProject(false));
-      });
+      setIsSavingProject(false);
     },
     [
       isSavingProject,
@@ -1973,6 +2026,7 @@ const MainFrame = (props: Props) => {
             onAddExternalLayout={addExternalLayout}
             onAddEventsFunctionsExtension={addEventsFunctionsExtension}
             onAddExternalEvents={addExternalEvents}
+            onInstallExtension={onInstallExtension}
             onDeleteLayout={deleteLayout}
             onDeleteExternalLayout={deleteExternalLayout}
             onDeleteEventsFunctionsExtension={deleteEventsFunctionsExtension}
@@ -2096,7 +2150,8 @@ const MainFrame = (props: Props) => {
                   onCreate: () => openCreateDialog(),
                   onOpenProjectManager: () => openProjectManager(true),
                   onCloseProject: () => askToCloseProject(),
-                  onOpenAboutDialog: () => openAboutDialog(true),
+                  onOpenTutorials: () => onOpenTutorials(),
+                  onOpenGamesShowcase: () => onOpenGamesShowcase(),
                   onOpenHelpFinder: () => openHelpFinderDialog(true),
                   onOpenLanguageDialog: () => openLanguageDialog(true),
                   onLoadEventsFunctionsExtensions: () => {
@@ -2154,6 +2209,7 @@ const MainFrame = (props: Props) => {
         state.createDialogOpen &&
         renderCreateDialog({
           open: state.createDialogOpen,
+          initialTab: createDialogInitialTab,
           onClose: () => openCreateDialog(false),
           onOpen: async (storageProvider, fileMetadata) => {
             await setState(state => ({ ...state, createDialogOpen: false }));

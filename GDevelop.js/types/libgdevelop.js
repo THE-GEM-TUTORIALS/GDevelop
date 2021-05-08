@@ -37,6 +37,7 @@ declare class libGDevelop {
   VectorString: Class<gdVectorString>;
   VectorPlatformExtension: Class<gdVectorPlatformExtension>;
   VectorDependencyMetadata: Class<gdVectorDependencyMetadata>;
+  VectorVariable: Class<gdVectorVariable>;
   MapStringString: Class<gdMapStringString>;
   MapStringBoolean: Class<gdMapStringBoolean>;
   MapStringDouble: Class<gdMapStringDouble>;
@@ -51,6 +52,7 @@ declare class libGDevelop {
   Platform: Class<gdPlatform>;
   JsPlatform: Class<gdJsPlatform>;
   PairStringVariable: Class<gdPairStringVariable>;
+  Variable_Type: Class<Variable_Type>;
   Variable: Class<gdVariable>;
   VariablesContainer: Class<gdVariablesContainer>;
   ObjectGroup: Class<gdObjectGroup>;
@@ -76,11 +78,14 @@ declare class libGDevelop {
   PropertyDescriptor: Class<gdPropertyDescriptor>;
   NamedPropertyDescriptor: Class<gdNamedPropertyDescriptor>;
   MapStringPropertyDescriptor: Class<gdMapStringPropertyDescriptor>;
+  MapStringSerializerValue: Class<gdMapStringSerializerValue>;
+  VectorPairStringSharedPtrSerializerElement: Class<gdVectorPairStringSharedPtrSerializerElement>;
   Resource: Class<gdResource>;
   ResourcesManager: Class<gdResourcesManager>;
   ImageResource: Class<gdImageResource>;
   AudioResource: Class<gdAudioResource>;
   FontResource: Class<gdFontResource>;
+  BitmapFontResource: Class<gdBitmapFontResource>;
   VideoResource: Class<gdVideoResource>;
   JsonResource: Class<gdJsonResource>;
   InitialInstance: Class<gdInitialInstance>;
@@ -91,6 +96,7 @@ declare class libGDevelop {
   InitialInstanceJSFunctor: Class<gdInitialInstanceJSFunctor>;
   SerializerValue: Class<gdSerializerValue>;
   SerializerElement: Class<gdSerializerElement>;
+  SharedPtrSerializerElement: Class<gdSharedPtrSerializerElement>;
   Serializer: Class<gdSerializer>;
   InstructionsList: Class<gdInstructionsList>;
   Instruction: Class<gdInstruction>;
@@ -101,6 +107,7 @@ declare class libGDevelop {
   ExpressionCodeGenerationInformation: Class<gdExpressionCodeGenerationInformation>;
   InstructionMetadata: Class<gdInstructionMetadata>;
   ExpressionMetadata: Class<gdExpressionMetadata>;
+  MultipleInstructionMetadata: Class<gdMultipleInstructionMetadata>;
   DependencyMetadata: Class<gdDependencyMetadata>;
   ParameterMetadata: Class<gdParameterMetadata>;
   VectorParameterMetadata: Class<gdVectorParameterMetadata>;
@@ -127,6 +134,7 @@ declare class libGDevelop {
   VectorEventsSearchResult: Class<gdVectorEventsSearchResult>;
   EventsRefactorer: Class<gdEventsRefactorer>;
   WholeProjectRefactorer: Class<gdWholeProjectRefactorer>;
+  UsedExtensionsFinder: Class<gdUsedExtensionsFinder>;
   ExtensionAndBehaviorMetadata: Class<gdExtensionAndBehaviorMetadata>;
   ExtensionAndObjectMetadata: Class<gdExtensionAndObjectMetadata>;
   ExtensionAndEffectMetadata: Class<gdExtensionAndEffectMetadata>;
@@ -182,7 +190,6 @@ declare class libGDevelop {
   PanelSpriteObject: Class<gdPanelSpriteObject>;
   ShapePainterObject: Class<gdShapePainterObject>;
   TextEntryObject: Class<gdTextEntryObject>;
-  SkeletonObject: Class<gdSkeletonObject>;
   ParticleEmitterObject_RendererType: Class<ParticleEmitterObject_RendererType>;
   ParticleEmitterObject: Class<gdParticleEmitterObject>;
   LayoutCodeGenerator: Class<gdLayoutCodeGenerator>;

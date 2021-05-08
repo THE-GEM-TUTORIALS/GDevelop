@@ -35,7 +35,8 @@ export type AlertMessageIdentifier =
   | 'p2p-broker-recommendation'
   | 'command-palette-shortcut'
   | 'asset-installed-explanation'
-  | 'extension-installed-explanation';
+  | 'extension-installed-explanation'
+  | 'project-should-have-unique-package-name';
 
 export type EditorMosaicName =
   | 'scene-editor'
@@ -146,6 +147,12 @@ export const allAlertMessages: Array<{
       <Trans>Explanation after an object is installed from the store</Trans>
     ),
   },
+  {
+    key: 'project-should-have-unique-package-name',
+    label: (
+      <Trans>Project package names should not begin with com.example</Trans>
+    ),
+  },
 ];
 
 /**
@@ -176,6 +183,7 @@ export type PreferencesValues = {|
   userShortcutMap: ShortcutMap,
   newObjectDialogDefaultTab: 'asset-store' | 'new-object',
   isMenuBarHiddenInPreview: boolean,
+  backdropClickBehavior: string,
 |};
 
 /**
@@ -226,17 +234,18 @@ export type Preferences = {|
   setNewObjectDialogDefaultTab: ('asset-store' | 'new-object') => void,
   getIsMenuBarHiddenInPreview: () => boolean,
   setIsMenuBarHiddenInPreview: (enabled: boolean) => void,
+  setBackdropClickBehavior: (value: string) => void,
 |};
 
 export const initialPreferences = {
   values: {
     language: 'en',
     autoDownloadUpdates: true,
-    themeName: electron
-      ? electron.remote.nativeTheme.shouldUseDarkColors
+    themeName:
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'Nord'
-        : 'GDevelop default'
-      : 'GDevelop default',
+        : 'GDevelop default',
     codeEditorThemeName: 'vs-dark',
     hiddenAlertMessages: {},
     hiddenTutorialHints: {},
@@ -256,6 +265,7 @@ export const initialPreferences = {
     userShortcutMap: {},
     newObjectDialogDefaultTab: electron ? 'new-object' : 'asset-store',
     isMenuBarHiddenInPreview: true,
+    backdropClickBehavior: 'cancel',
   },
   setLanguage: () => {},
   setThemeName: () => {},
@@ -296,6 +306,7 @@ export const initialPreferences = {
   setNewObjectDialogDefaultTab: () => {},
   getIsMenuBarHiddenInPreview: () => true,
   setIsMenuBarHiddenInPreview: () => {},
+  setBackdropClickBehavior: () => {},
 };
 
 const PreferencesContext = React.createContext<Preferences>(initialPreferences);

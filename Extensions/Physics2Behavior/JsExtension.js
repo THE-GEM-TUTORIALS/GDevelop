@@ -25,13 +25,15 @@ module.exports = {
     gd /*: libGDevelop */
   ) {
     const extension = new gd.PlatformExtension();
-    extension.setExtensionInformation(
-      'Physics2',
-      'Physics Engine 2.0',
-      "The physics engine simulates realistic object physics, with gravity, forces, joints, etc. It's perfect for games that need to have realistic behaving objects and a gameplay centered around it.",
-      'Florian Rival, Franco Maciel',
-      'MIT'
-    );
+    extension
+      .setExtensionInformation(
+        'Physics2',
+        'Physics Engine 2.0',
+        "The physics engine simulates realistic object physics, with gravity, forces, joints, etc. It's perfect for games that need to have realistic behaving objects and a gameplay centered around it.",
+        'Florian Rival, Franco Maciel',
+        'MIT'
+      )
+      .setExtensionHelpPath('/behaviors/physics2');
 
     var physics2Behavior = new gd.BehaviorJsImplementation();
     // $FlowExpectedError - ignore Flow warning as we're creating a behavior
@@ -1315,7 +1317,7 @@ module.exports = {
         'ApplyForce',
         _('Apply force'),
         _(
-          "Apply a force to the object. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply a force to the object. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _('Apply to _PARAM0_ a force of _PARAM2_;_PARAM3_'),
         _('Forces & impulses'),
@@ -1334,9 +1336,9 @@ module.exports = {
     aut
       .addAction(
         'ApplyPolarForce',
-        _('Apply polar force'),
+        _('Apply force (angle)'),
         _(
-          "Apply a force to the object using polar coordinates. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply a force to the object using polar coordinates. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _('Apply to _PARAM0_ a force of angle _PARAM2_ and length _PARAM3_'),
         _('Forces & impulses'),
@@ -1357,7 +1359,7 @@ module.exports = {
         'ApplyForceTowardPosition',
         _('Apply force toward position'),
         _(
-          "Apply a force to the object to move it toward a position. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply a force to the object to move it toward a position. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _(
           'Apply to _PARAM0_ a force of length _PARAM2_ towards _PARAM3_;_PARAM4_'
@@ -1381,7 +1383,7 @@ module.exports = {
         'ApplyImpulse',
         _('Apply impulse'),
         _(
-          "Apply an impulse to the object. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply an impulse to the object. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _('Apply to _PARAM0_ an impulse of _PARAM2_;_PARAM3_'),
         _('Forces & impulses'),
@@ -1400,9 +1402,9 @@ module.exports = {
     aut
       .addAction(
         'ApplyPolarImpulse',
-        _('Apply polar impulse'),
+        _('Apply impulse (angle)'),
         _(
-          "Apply an impulse to the object using polar coordinates. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply an impulse to the object using polar coordinates. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _(
           'Apply to _PARAM0_ an impulse of angle _PARAM2_ and length _PARAM3_ (applied at _PARAM4_;_PARAM5_)'
@@ -1425,7 +1427,7 @@ module.exports = {
         'ApplyImpulseTowardPosition',
         _('Apply impulse toward position'),
         _(
-          "Apply an impulse to the object to move it toward a position. You've to specify the applying point (you can get the body mass center through expressions)."
+          'Apply an impulse to the object to move it toward a position. You need to specify the point of application (you can get the body mass center through expressions).'
         ),
         _(
           'Apply to _PARAM0_ an impulse of length _PARAM2_ towards _PARAM3_;_PARAM4_ (applied at _PARAM5_;_PARAM6_)'
@@ -1447,8 +1449,10 @@ module.exports = {
     aut
       .addAction(
         'ApplyTorque',
-        _('Apply torque'),
-        _('Apply a torque to the object.'),
+        _('Apply torque (rotational force)'),
+        _(
+          'Apply a torque (also called "rotational force") to the object. This will make the object rotate without moving it.'
+        ),
         _('Apply to _PARAM0_ a torque of _PARAM2_'),
         _('Forces & impulses'),
         'res/physics24.png',
@@ -1463,8 +1467,10 @@ module.exports = {
     aut
       .addAction(
         'ApplyAngularImpulse',
-        _('Apply angular impulse'),
-        _('Apply an angular impulse to the object.'),
+        _('Apply angular impulse (rotational impulse)'),
+        _(
+          'Apply an angular impulse (also called a "rotational impulse") to the object. This will make the object rotate without moving it.'
+        ),
         _('Apply to _PARAM0_ an angular impulse of _PARAM2_'),
         _('Forces & impulses'),
         'res/physics24.png',

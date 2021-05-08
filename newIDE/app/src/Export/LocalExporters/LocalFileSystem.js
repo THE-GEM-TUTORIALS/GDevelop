@@ -1,4 +1,5 @@
 import optionalRequire from '../../Utils/OptionalRequire.js';
+import { getUID } from '../../Utils/LocalUserInfo.js';
 var fs = optionalRequire('fs-extra');
 var path = optionalRequire('path');
 var os = optionalRequire('os');
@@ -24,32 +25,14 @@ export default {
     return fs.existsSync(path);
   },
   clearDir: function(path) {
-    var files = [];
-    var that = this;
     try {
-      if (fs.existsSync(path)) {
-        files = fs.readdirSync(path);
-        files.forEach(function(file) {
-          var curPath = path + '/' + file;
-          if (fs.lstatSync(curPath).isDirectory()) {
-            // recurse
-            that.clearDir(curPath);
-          } else {
-            // delete file
-            try {
-              fs.unlinkSync(curPath);
-            } catch (e) {
-              console.error('fs.unlinkSync(' + curPath + ') failed: ' + e);
-            }
-          }
-        });
-      }
+      fs.emptyDirSync(path);
     } catch (e) {
       console.error('clearDir(' + path + ') failed: ' + e);
     }
   },
   getTempDir: function() {
-    return os.tmpdir();
+    return path.join(os.tmpdir(), `GDTMP-${getUID()}`);
   },
   fileNameFrom: function(fullPath) {
     if (this._isExternalUrl(fullPath)) return fullPath;

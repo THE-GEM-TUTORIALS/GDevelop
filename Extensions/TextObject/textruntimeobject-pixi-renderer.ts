@@ -1,4 +1,6 @@
 namespace gdjs {
+  import PIXI = GlobalPIXIModule.PIXI;
+
   class TextRuntimeObjectPixiRenderer {
     _object: gdjs.TextRuntimeObject;
     _fontManager: any;
@@ -59,6 +61,7 @@ namespace gdjs {
       } else {
         style.fillGradientType = PIXI.TEXT_GRADIENT.LINEAR_HORIZONTAL;
       }
+      // @ts-ignore
       style.align = this._object._textAlign;
       style.wordWrap = this._object._wrapping;
       style.wordWrapWidth = this._object._wrappingWidth;
@@ -147,14 +150,14 @@ namespace gdjs {
     }
 
     /**
-     * Get y-scale of the text.
+     * Get x-scale of the text.
      */
     getScaleX(): float {
       return this._text.scale.x;
     }
 
     /**
-     * Get x-scale of the text.
+     * Get y-scale of the text.
      */
     getScaleY(): float {
       return this._text.scale.y;
@@ -164,7 +167,7 @@ namespace gdjs {
      * Set the text object scale.
      * @param newScale The new scale for the text object.
      */
-    setScale(newScale: number): void {
+    setScale(newScale: float): void {
       this._text.scale.x = newScale;
       this._text.scale.y = newScale;
     }
@@ -173,7 +176,7 @@ namespace gdjs {
      * Set the text object x-scale.
      * @param newScale The new x-scale for the text object.
      */
-    setScaleX(newScale: number): void {
+    setScaleX(newScale: float): void {
       this._text.scale.x = newScale;
     }
 
@@ -181,7 +184,7 @@ namespace gdjs {
      * Set the text object y-scale.
      * @param newScale The new y-scale for the text object.
      */
-    setScaleY(newScale: number): void {
+    setScaleY(newScale: float): void {
       this._text.scale.y = newScale;
     }
   }

@@ -46,6 +46,7 @@ namespace gdjs {
       let i = 0;
       for (let j = 0; j < data.length; ++j) {
         const varData = data[j];
+        if (!varData.name) continue;
 
         //Get the variable:
         const variable = that.get(varData.name);
@@ -186,7 +187,9 @@ namespace gdjs {
      * This container has no state and always returns the bad variable ( see VariablesContainer.badVariable ).
      * @static
      */
-    static badVariablesContainer = {
+    static badVariablesContainer: VariablesContainer = {
+      _variables: new Hashtable(),
+      _variablesArray: [],
       has: function () {
         return false;
       },
@@ -212,10 +215,32 @@ namespace gdjs {
      * This variable has no state and always return 0 or the empty string.
      * @static
      */
-    static badVariable = {
-      getChild: function () {
-        return VariablesContainer.badVariable;
+    static badVariable: Variable = {
+      _type: 'number',
+      _bool: false,
+      _children: {},
+      _childrenArray: [],
+      _str: '',
+      _undefinedInContainer: true,
+      _value: 0,
+      reinitialize: () => {},
+      addChild: () => gdjs.VariablesContainer.badVariable,
+      castTo: () => {},
+      clearChildren: () => {},
+      clone: () => gdjs.VariablesContainer.badVariable,
+      getChildrenCount: () => 0,
+      replaceChildren: () => {},
+      replaceChildrenArray: () => {},
+      getType: function () {
+        return 'number';
       },
+      isPrimitive: function () {
+        return true;
+      },
+      setValue: () => {},
+      getValue: () => 0,
+      getChild: () => gdjs.VariablesContainer.badVariable,
+      getChildAt: () => gdjs.VariablesContainer.badVariable,
       hasChild: function () {
         return false;
       },
@@ -234,14 +259,28 @@ namespace gdjs {
       setString: function () {
         return;
       },
+      setBoolean: function () {
+        return;
+      },
       getAsString: function () {
-        return '';
+        return '0';
       },
       getAsNumber: function () {
         return 0;
       },
+      getAsBoolean: function () {
+        return false;
+      },
       getAllChildren: function () {
         return {};
+      },
+      getAllChildrenArray: function () {
+        return [];
+      },
+      pushVariableCopy: () => {},
+      pushValue: () => {},
+      removeAtIndex: function () {
+        return;
       },
       add: function () {
         return;
@@ -258,11 +297,14 @@ namespace gdjs {
       concatenate: function () {
         return;
       },
+      concatenateString: function () {
+        return;
+      },
       setUndefinedInContainer: function () {
         return;
       },
       isUndefinedInContainer: function () {
-        return;
+        return true;
       },
     };
   }
